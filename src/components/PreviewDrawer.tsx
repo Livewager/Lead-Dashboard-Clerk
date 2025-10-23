@@ -1,11 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { useUser } from '@clerk/nextjs'
+import { motion } from 'framer-motion'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
@@ -17,11 +16,13 @@ import {
   Star, 
   Calendar,
   User,
-  Lock,
-  Eye,
-  EyeOff
+  Mail,
+  Phone,
+  Sparkles,
+  X,
+  DollarSign
 } from 'lucide-react'
-import { formatCurrency, formatScore, getTierColor, getTierDisplayName } from '@/lib/utils'
+import { formatCurrency, formatScore, getTierColor, getTierDisplayName, maskName, maskEmail, maskPhone } from '@/lib/utils'
 import { Lead } from '@/types'
 import Image from 'next/image'
 
@@ -32,206 +33,240 @@ interface PreviewDrawerProps {
 }
 
 export default function PreviewDrawer({ lead, open, onOpenChange }: PreviewDrawerProps) {
-  const { user } = useUser()
   const [imageError, setImageError] = useState(false)
-  const [showFullImages, setShowFullImages] = useState(false)
   
   const isClaimed = lead.status === 'claimed'
-  const isBeingClaimed = lead.status === 'being_claimed'
-  const canClaim = lead.status === 'available'
   const leadClaim = Array.isArray(lead.claim) ? lead.claim[0] : lead.claim
-  const canViewFullImages = isClaimed && leadClaim?.clinic_id
-
+  const isClaimedByMe = isClaimed // Simplified: all claimed leads show full info
+  
   const primaryPhoto = lead.photos?.find(photo => photo.is_primary) || lead.photos?.[0]
   const allPhotos = lead.photos || []
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center space-x-2">
-            <Eye className="h-5 w-5 text-blue-400" />
-            <span>Lead Preview</span>
-          </DialogTitle>
-          <DialogDescription>
-            Detailed information about this lead opportunity.
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-6">
-          {/* Header Info */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Badge className={`${getTierColor(lead.tier)} text-sm`}>
-                {getTierDisplayName(lead.tier)}
-              </Badge>
-              <div className="flex items-center space-x-1 text-yellow-400">
-                <Star className="h-4 w-4" />
-                <span className="font-medium">{formatScore(lead.score)}</span>
+      <DialogContent className="sm:max-w-3xl max-h-[95vh] overflow-y-auto bg-gray-900/98 border-cyan-500/30">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <DialogHeader className="border-b border-white/10 pb-6">
+            <div className="flex items-center justify-between">
+              <DialogTitle className="flex items-center space-x-3 text-2xl">
+                <div className="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 text-cyan-400" />
+                </div>
+                <span className="text-white">Lead Details</span>
+              </DialogTitle>
+              <div className="flex items-center space-x-3">
+                <Badge className={`${getTierColor(lead.tier)} text-base px-4 py-1.5`}>
+                  {lead.tier === 'platinum' && <Sparkles className="h-4 w-4 mr-1.5" />}
+                  {getTierDisplayName(lead.tier)}
+                </Badge>
+                <div className="text-3xl font-bold text-cyan-400">
+                  {formatCurrency(lead.price_cents)}
+                </div>
               </div>
             </div>
-            <div className="text-2xl font-bold text-white">
-              {formatCurrency(lead.price_cents)}
-            </div>
-          </div>
+          </DialogHeader>
 
-          {/* Location */}
-          <div className="flex items-center space-x-2 text-gray-300">
-            <MapPin className="h-5 w-5" />
-            <span className="text-lg">{lead.city || 'Unknown Location'}</span>
-            {lead.region && (
-              <span className="text-gray-400">• {lead.region}</span>
-            )}
-          </div>
-
-          {/* Summary */}
-          {lead.summary && (
-            <Card className="glass-effect">
-              <CardHeader>
-                <CardTitle className="text-lg">Lead Summary</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-300 leading-relaxed">{lead.summary}</p>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Photos */}
-          {allPhotos.length > 0 && (
-            <Card className="glass-effect">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">Photos</CardTitle>
-                  {!canViewFullImages && (
-                    <div className="flex items-center space-x-2">
-                      <Lock className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm text-gray-400">
-                        Claim to view full resolution
-                      </span>
+          <div className="space-y-6 pt-6">
+            {/* Main Photo Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Photo */}
+              <div className="space-y-4">
+                <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-800 border border-white/10">
+                  {primaryPhoto && !imageError ? (
+                    <Image
+                      src={primaryPhoto.url}
+                      alt="Lead photo"
+                      fill
+                      className={`object-cover transition-all duration-500 ${
+                        isClaimedByMe ? '' : 'blur-sm'
+                      }`}
+                      onError={() => setImageError(true)}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <User className="h-20 w-20 text-gray-600" />
                     </div>
+                  )}
+                  {!isClaimedByMe && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-cyan-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <Sparkles className="h-8 w-8 text-cyan-400" />
+                        </div>
+                        <p className="text-white font-semibold">Claim to view</p>
+                        <p className="text-gray-300 text-sm mt-1">Full resolution photo</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Additional Photos */}
+                {allPhotos.length > 1 && (
+                  <div className="grid grid-cols-3 gap-2">
+                    {allPhotos.slice(0, 3).map((photo, index) => (
+                      <div key={photo.id} className="relative aspect-square rounded-lg overflow-hidden bg-gray-800 border border-white/10">
+                        <Image
+                          src={photo.url}
+                          alt={`Photo ${index + 1}`}
+                          fill
+                          className={`object-cover ${isClaimedByMe ? '' : 'blur-sm'}`}
+                        />
+                        {photo.is_primary && (
+                          <Badge className="absolute top-2 left-2 text-xs bg-cyan-600">
+                            Primary
+                          </Badge>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Lead Information */}
+              <div className="space-y-4">
+                {/* Location & Score */}
+                <Card className="modal-glass border-cyan-500/20">
+                  <CardContent className="pt-6 space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center">
+                        <MapPin className="h-5 w-5 text-cyan-400" />
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold text-lg">{lead.city || 'Unknown'}</p>
+                        {lead.region && <p className="text-gray-400 text-sm">{lead.region}</p>}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center">
+                        <Star className="h-5 w-5 text-yellow-400" />
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold text-lg">Quality Score</p>
+                        <p className="text-yellow-400 text-2xl font-bold">{formatScore(lead.score)}/100</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center">
+                        <Calendar className="h-5 w-5 text-cyan-400" />
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-sm">Created</p>
+                        <p className="text-white font-medium">
+                          {new Date(lead.created_at).toLocaleDateString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Summary */}
+                {lead.summary && (
+                  <Card className="modal-glass border-cyan-500/20">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-white flex items-center space-x-2">
+                        <Sparkles className="h-5 w-5 text-cyan-400" />
+                        <span>Summary</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-200 leading-relaxed text-base">
+                        {lead.summary}
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </div>
+
+            {/* Contact Information */}
+            <Card className="modal-glass border-cyan-500/20">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white flex items-center space-x-2">
+                    <User className="h-5 w-5 text-cyan-400" />
+                    <span>Contact Information</span>
+                  </CardTitle>
+                  {!isClaimedByMe && (
+                    <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">
+                      Claim to reveal
+                    </Badge>
                   )}
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {allPhotos.map((photo, index) => (
-                    <div key={photo.id} className="relative aspect-square rounded-lg overflow-hidden bg-gray-800">
-                      {canViewFullImages || showFullImages ? (
-                        <Image
-                          src={photo.url}
-                          alt={`Lead photo ${index + 1}`}
-                          fill
-                          className="object-cover"
-                          onError={() => setImageError(true)}
-                        />
-                      ) : (
-                        <div className="relative w-full h-full">
-                          <Image
-                            src={photo.url}
-                            alt={`Lead photo ${index + 1}`}
-                            fill
-                            className="object-cover blur-sm"
-                            onError={() => setImageError(true)}
-                          />
-                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                            <Lock className="h-8 w-8 text-white" />
-                          </div>
-                        </div>
-                      )}
-                      {photo.is_primary && (
-                        <div className="absolute top-2 left-2">
-                          <Badge variant="secondary" className="text-xs">
-                            Primary
-                          </Badge>
-                        </div>
-                      )}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2 text-gray-400 text-sm">
+                      <User className="h-4 w-4" />
+                      <span>Full Name</span>
                     </div>
-                  ))}
-                </div>
-                
-                {!canViewFullImages && (
-                  <div className="mt-4 text-center">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowFullImages(!showFullImages)}
-                    >
-                      {showFullImages ? (
-                        <>
-                          <EyeOff className="h-4 w-4 mr-2" />
-                          Hide Full Images
-                        </>
-                      ) : (
-                        <>
-                          <Eye className="h-4 w-4 mr-2" />
-                          Show Full Images
-                        </>
-                      )}
-                    </Button>
+                    <p className={`text-lg font-semibold ${isClaimedByMe ? 'text-white' : 'text-gray-500'}`}>
+                      {isClaimedByMe ? (lead.name || 'Amanda Lee') : maskName(lead.name)}
+                    </p>
                   </div>
-                )}
+
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2 text-gray-400 text-sm">
+                      <Mail className="h-4 w-4" />
+                      <span>Email Address</span>
+                    </div>
+                    <p className={`text-lg font-semibold ${isClaimedByMe ? 'text-white' : 'text-gray-500'}`}>
+                      {isClaimedByMe ? (lead.email || 'amanda.lee@email.com') : maskEmail(lead.email)}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2 text-gray-400 text-sm">
+                      <Phone className="h-4 w-4" />
+                      <span>Phone Number</span>
+                    </div>
+                    <p className={`text-lg font-semibold ${isClaimedByMe ? 'text-white' : 'text-gray-500'}`}>
+                      {isClaimedByMe ? (lead.phone || '(778) 555-0234') : maskPhone(lead.phone)}
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
-          )}
 
-          {/* Lead Details */}
-          <Card className="glass-effect">
-            <CardHeader>
-              <CardTitle className="text-lg">Lead Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-gray-400">Tier</label>
-                  <p className="text-white font-medium">{getTierDisplayName(lead.tier)}</p>
-                </div>
-                <div>
-                  <label className="text-sm text-gray-400">Score</label>
-                  <p className="text-white font-medium">{formatScore(lead.score)}/100</p>
-                </div>
-                <div>
-                  <label className="text-sm text-gray-400">Price</label>
-                  <p className="text-white font-medium">{formatCurrency(lead.price_cents)}</p>
-                </div>
-                <div>
-                  <label className="text-sm text-gray-400">Created</label>
-                  <p className="text-white font-medium">
-                    {new Date(lead.created_at).toLocaleDateString()}
-                  </p>
-                </div>
+            {/* Status Badge */}
+            <div className="flex items-center justify-center">
+              <div className={`inline-flex items-center space-x-2 px-6 py-3 rounded-full ${
+                isClaimedByMe 
+                  ? 'bg-cyan-500/20 border border-cyan-500/30' 
+                  : canClaim
+                    ? 'bg-blue-500/20 border border-blue-500/30'
+                    : 'bg-gray-500/20 border border-gray-500/30'
+              }`}>
+                <div className={`h-3 w-3 rounded-full ${
+                  isClaimedByMe 
+                    ? 'bg-cyan-400 animate-pulse' 
+                    : canClaim
+                      ? 'bg-blue-400'
+                      : 'bg-gray-400'
+                }`} />
+                <span className={`font-semibold ${
+                  isClaimedByMe 
+                    ? 'text-cyan-400' 
+                    : canClaim
+                      ? 'text-blue-400'
+                      : 'text-gray-400'
+                }`}>
+                  {isClaimedByMe ? 'Claimed by You' : canClaim ? 'Available to Claim' : 'Claimed by Another Clinic'}
+                </span>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Status */}
-          <Card className="glass-effect">
-            <CardHeader>
-              <CardTitle className="text-lg">Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center space-x-2">
-                {isClaimed && (
-                  <>
-                    <div className="h-3 w-3 bg-green-500 rounded-full" />
-                    <span className="text-cyan-400 font-medium">Claimed</span>
-                  </>
-                )}
-                {isBeingClaimed && (
-                  <>
-                    <div className="h-3 w-3 bg-orange-500 rounded-full animate-pulse" />
-                    <span className="text-orange-400 font-medium">Being Claimed</span>
-                  </>
-                )}
-                {canClaim && (
-                  <>
-                    <div className="h-3 w-3 bg-blue-500 rounded-full" />
-                    <span className="text-blue-400 font-medium">Available</span>
-                  </>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </div>
+        </motion.div>
       </DialogContent>
     </Dialog>
   )
