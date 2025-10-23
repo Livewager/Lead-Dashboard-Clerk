@@ -36,6 +36,7 @@ export default function PreviewDrawer({ lead, open, onOpenChange }: PreviewDrawe
   const [imageError, setImageError] = useState(false)
   
   const isClaimed = lead.status === 'claimed'
+  const canClaim = lead.status === 'available'
   const leadClaim = Array.isArray(lead.claim) ? lead.claim[0] : lead.claim
   const isClaimedByMe = isClaimed // Simplified: all claimed leads show full info
   
