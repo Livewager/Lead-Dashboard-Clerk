@@ -23,14 +23,17 @@ import { formatCurrency, formatScore, getTierDisplayName } from '@/lib/utils'
 import { Lead, DashboardStats } from '@/types'
 import LeadCard from '@/components/LeadCard'
 import ClaimModal from '@/components/ClaimModal'
+import ClaimSuccessModal from '@/components/ClaimSuccessModal'
 import PreviewDrawer from '@/components/PreviewDrawer'
 
 export default function Dashboard() {
   const { user } = useUser()
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const [claimModalOpen, setClaimModalOpen] = useState(false)
+  const [claimSuccessOpen, setClaimSuccessOpen] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
   const [filter, setFilter] = useState<'all' | 'warm' | 'hot' | 'platinum'>('all')
+  const [transactionId, setTransactionId] = useState('')
 
   // Fetch dashboard stats
   const { data: stats, isLoading: statsLoading } = useQuery({
@@ -221,6 +224,10 @@ export default function Dashboard() {
 
   const handleClaimSuccess = () => {
     setClaimModalOpen(false)
+    // Generate a transaction ID
+    const txId = `TX-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+    setTransactionId(txId)
+    setClaimSuccessOpen(true)
     refetch()
   }
 
@@ -407,6 +414,12 @@ export default function Dashboard() {
             open={claimModalOpen}
             onOpenChange={setClaimModalOpen}
             onSuccess={handleClaimSuccess}
+          />
+          <ClaimSuccessModal
+            lead={selectedLead}
+            open={claimSuccessOpen}
+            onOpenChange={setClaimSuccessOpen}
+            transactionId={transactionId}
           />
           <PreviewDrawer
             lead={selectedLead}

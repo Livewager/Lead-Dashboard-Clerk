@@ -44,6 +44,33 @@ export default function AccountPage() {
     if (!user) return
 
     try {
+      // Check if we're in demo mode (no real Supabase connection)
+      if (process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://demo.supabase.co') {
+        // Demo mode - create mock clinic data
+        const mockClinic = {
+          id: 'demo-clinic-1',
+          clerk_user_id: user.id,
+          clinic_name: `${user.firstName} ${user.lastName}` || 'Demo Clinic',
+          email: user.emailAddresses[0]?.emailAddress || 'demo@clinic.com',
+          phone: '',
+          location: '',
+          logo_url: '',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+        
+        setClinic(mockClinic)
+        setFormData({
+          clinic_name: mockClinic.clinic_name,
+          email: mockClinic.email,
+          phone: mockClinic.phone,
+          location: mockClinic.location,
+          logo_url: mockClinic.logo_url
+        })
+        setIsLoading(false)
+        return
+      }
+
       const { data, error } = await supabase
         .from('clinics')
         .select('*')
@@ -97,6 +124,16 @@ export default function AccountPage() {
     if (!user || !clinic) return
 
     try {
+      // Check if we're in demo mode
+      if (process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://demo.supabase.co') {
+        // Demo mode - just update local state
+        const updatedClinic = { ...clinic, ...formData }
+        setClinic(updatedClinic)
+        toast.success('Profile updated successfully! (Demo mode)')
+        setIsEditing(false)
+        return
+      }
+
       const { error } = await supabase
         .from('clinics')
         .update(formData)

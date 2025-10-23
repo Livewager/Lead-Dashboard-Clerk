@@ -77,28 +77,64 @@ export default function LeadCard({ lead, onClaim, onPreview }: LeadCardProps) {
 
       <CardContent className="space-y-4">
         {/* Lead Image */}
-        <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-800">
-          {primaryPhoto && !imageError ? (
-            <div className="relative w-full h-full">
-              <Image
-                src={primaryPhoto.url}
-                alt="Lead photo"
-                fill
-                className="object-cover"
-                onError={() => setImageError(true)}
-              />
-              {!canClaim && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <Lock className="h-8 w-8 text-white" />
+        <div className="space-y-3">
+          {/* Main Image */}
+          <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-800">
+            {primaryPhoto && !imageError ? (
+              <div className="relative w-full h-full">
+                <Image
+                  src={primaryPhoto.url}
+                  alt="Lead photo"
+                  fill
+                  className={`object-cover transition-all duration-300 ${
+                    !canClaim ? 'blur-sm' : ''
+                  }`}
+                  onError={() => setImageError(true)}
+                />
+                {!canClaim && (
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    <div className="text-center">
+                      <Lock className="h-8 w-8 text-white mx-auto mb-2" />
+                      <p className="text-xs text-white/80">Claim to view</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-800">
+                <div className="text-center">
+                  <User className="h-12 w-12 text-gray-500 mx-auto mb-2" />
+                  <p className="text-xs text-gray-400">No photo</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Additional Image Thumbnails */}
+          {lead.photos && lead.photos.length > 1 && (
+            <div className="flex space-x-2">
+              {lead.photos.slice(0, 3).map((photo, index) => (
+                <div key={photo.id} className="relative w-12 h-12 rounded-md overflow-hidden bg-gray-700">
+                  <Image
+                    src={photo.url}
+                    alt={`Lead photo ${index + 1}`}
+                    fill
+                    className={`object-cover transition-all duration-300 ${
+                      !canClaim ? 'blur-sm' : ''
+                    }`}
+                  />
+                  {!canClaim && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <Lock className="h-3 w-3 text-white" />
+                    </div>
+                  )}
+                </div>
+              ))}
+              {lead.photos.length > 3 && (
+                <div className="w-12 h-12 rounded-md bg-gray-700 flex items-center justify-center">
+                  <span className="text-xs text-gray-400">+{lead.photos.length - 3}</span>
                 </div>
               )}
-            </div>
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-800">
-              <div className="text-center">
-                <User className="h-12 w-12 text-gray-500 mx-auto mb-2" />
-                <p className="text-xs text-gray-400">No photo</p>
-              </div>
             </div>
           )}
         </div>
