@@ -82,7 +82,7 @@ export default function NewLeadPopup({
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.2, type: "spring" }}
                   >
-                    <Badge className="bg-green-600 text-white px-3 py-1">
+                    <Badge className="bg-cyan-600 text-white px-3 py-1">
                       <Sparkles className="h-4 w-4 mr-1" />
                       New Lead Alert!
                     </Badge>
@@ -179,7 +179,7 @@ export default function NewLeadPopup({
 
                   {/* Price */}
                   <div className="flex items-center justify-between pt-2">
-                    <div className="text-2xl font-bold text-green-400">
+                    <div className="text-2xl font-bold text-cyan-400">
                       {formatCurrency(lead.price_cents)}
                     </div>
                     <div className="text-xs text-gray-400">
@@ -211,7 +211,7 @@ export default function NewLeadPopup({
                       onClaim()
                       onClose()
                     }}
-                    className="flex-1 bg-green-600 hover:bg-green-700"
+                    className="flex-1 bg-cyan-600 hover:bg-cyan-700"
                   >
                     Claim Lead
                   </Button>

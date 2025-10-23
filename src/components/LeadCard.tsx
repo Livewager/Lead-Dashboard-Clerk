@@ -34,6 +34,13 @@ export default function LeadCard({ lead, onClaim, onPreview }: LeadCardProps) {
   const isClaimed = lead.status === 'claimed'
   const isBeingClaimed = lead.status === 'being_claimed'
   const canClaim = lead.status === 'available'
+  
+  // Check if this lead is claimed by the current user
+  // In production, this would check if lead.claim.clinic_id matches current user's clinic_id
+  const isClaimedByMe = isClaimed && lead.claim?.clinic_id
+  
+  // Images should be blurred unless claimed by the current user
+  const shouldBlurImage = !isClaimedByMe
 
   const getStatusIcon = () => {
     if (isClaimed) return <CheckCircle className="h-4 w-4" />
@@ -84,23 +91,23 @@ export default function LeadCard({ lead, onClaim, onPreview }: LeadCardProps) {
           <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-800">
             {primaryPhoto && !imageError ? (
               <div className="relative w-full h-full">
-                <Image
-                  src={primaryPhoto.url}
-                  alt="Lead photo"
-                  fill
-                  className={`object-cover transition-all duration-300 ${
-                    !canClaim ? 'blur-sm' : ''
-                  }`}
-                  onError={() => setImageError(true)}
-                />
-                {!canClaim && (
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <div className="text-center">
-                      <Lock className="h-8 w-8 text-white mx-auto mb-2" />
-                      <p className="text-xs text-white/80">Claim to view</p>
-                    </div>
+              <Image
+                src={primaryPhoto.url}
+                alt="Lead photo"
+                fill
+                className={`object-cover transition-all duration-300 ${
+                  shouldBlurImage ? 'blur-md' : ''
+                }`}
+                onError={() => setImageError(true)}
+              />
+              {shouldBlurImage && (
+                <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                  <div className="text-center">
+                    <Lock className="h-8 w-8 text-white mx-auto mb-2" />
+                    <p className="text-xs text-white/80">Claim to view</p>
                   </div>
-                )}
+                </div>
+              )}
               </div>
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-800">
@@ -122,10 +129,10 @@ export default function LeadCard({ lead, onClaim, onPreview }: LeadCardProps) {
                     alt={`Lead photo ${index + 1}`}
                     fill
                     className={`object-cover transition-all duration-300 ${
-                      !canClaim ? 'blur-sm' : ''
+                      shouldBlurImage ? 'blur-sm' : ''
                     }`}
                   />
-                  {!canClaim && (
+                  {shouldBlurImage && (
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                       <Lock className="h-3 w-3 text-white" />
                     </div>
@@ -168,20 +175,20 @@ export default function LeadCard({ lead, onClaim, onPreview }: LeadCardProps) {
           <div className="space-y-1 bg-gray-800/30 p-2 rounded-lg">
             <div className="flex items-center space-x-2 text-xs">
               <User className="h-3 w-3 text-gray-400" />
-              <span className={`${isClaimed ? 'text-gray-200' : 'text-gray-400'}`}>
-                {isClaimed ? (lead.name || 'John Doe') : maskName(lead.name)}
+              <span className={`${isClaimedByMe ? 'text-gray-200' : 'text-gray-400'}`}>
+                {isClaimedByMe ? (lead.name || 'John Doe') : maskName(lead.name)}
               </span>
             </div>
             <div className="flex items-center space-x-2 text-xs">
               <Mail className="h-3 w-3 text-gray-400" />
-              <span className={`${isClaimed ? 'text-gray-200' : 'text-gray-400'}`}>
-                {isClaimed ? (lead.email || 'john@example.com') : maskEmail(lead.email)}
+              <span className={`${isClaimedByMe ? 'text-gray-200' : 'text-gray-400'}`}>
+                {isClaimedByMe ? (lead.email || 'john@example.com') : maskEmail(lead.email)}
               </span>
             </div>
             <div className="flex items-center space-x-2 text-xs">
               <Phone className="h-3 w-3 text-gray-400" />
-              <span className={`${isClaimed ? 'text-gray-200' : 'text-gray-400'}`}>
-                {isClaimed ? (lead.phone || '(555) 123-4567') : maskPhone(lead.phone)}
+              <span className={`${isClaimedByMe ? 'text-gray-200' : 'text-gray-400'}`}>
+                {isClaimedByMe ? (lead.phone || '(555) 123-4567') : maskPhone(lead.phone)}
               </span>
             </div>
           </div>
@@ -212,7 +219,7 @@ export default function LeadCard({ lead, onClaim, onPreview }: LeadCardProps) {
             <Button
               size="sm"
               onClick={onClaim}
-              className="flex-1 bg-green-600 hover:bg-green-700"
+              className="flex-1 bg-cyan-600 hover:bg-cyan-700"
             >
               Claim Lead
             </Button>

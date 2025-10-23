@@ -152,7 +152,7 @@ export default function DemoLeadCard({ lead, onClaim, onPreview }: DemoLeadCardP
               <Button
                 size="sm"
                 onClick={onClaim}
-                className="flex-1 bg-green-600 hover:bg-green-700"
+                className="flex-1 bg-cyan-600 hover:bg-cyan-700"
               >
                 Claim Lead
               </Button>

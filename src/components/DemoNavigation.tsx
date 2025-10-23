@@ -27,7 +27,7 @@ export default function DemoNavigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/demo" className="flex items-center space-x-2">
-            <div className="h-8 w-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg flex items-center justify-center">
+            <div className="h-8 w-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">CC</span>
             </div>
             <span className="text-xl font-bold text-white">
@@ -60,9 +60,9 @@ export default function DemoNavigation() {
 
           {/* Demo Badge */}
           <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-2 px-3 py-1 bg-green-600/20 border border-green-500/30 rounded-full">
-              <Sparkles className="h-4 w-4 text-green-400" />
-              <span className="text-green-400 text-sm font-medium">Demo Mode</span>
+            <div className="hidden md:flex items-center space-x-2 px-3 py-1 bg-cyan-600/20 border border-green-500/30 rounded-full">
+              <Sparkles className="h-4 w-4 text-cyan-400" />
+              <span className="text-cyan-400 text-sm font-medium">Demo Mode</span>
             </div>
             
             {/* Mobile menu button */}
@@ -105,7 +105,7 @@ export default function DemoNavigation() {
                   </Link>
                 )
               })}
-              <div className="flex items-center space-x-2 px-3 py-2 text-green-400">
+              <div className="flex items-center space-x-2 px-3 py-2 text-cyan-400">
                 <Sparkles className="h-4 w-4" />
                 <span className="text-sm font-medium">Demo Mode</span>
               </div>

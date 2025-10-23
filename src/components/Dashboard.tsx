@@ -285,13 +285,13 @@ export default function Dashboard() {
               <CardTitle className="text-sm font-medium text-gray-300">
                 New Leads (24h)
               </CardTitle>
-              <TrendingUp className="h-4 w-4 text-green-400" />
+              <TrendingUp className="h-4 w-4 text-cyan-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
                 {stats?.newLeads24h || 0}
               </div>
-              <p className="text-xs text-green-400">
+              <p className="text-xs text-cyan-400">
                 +12% from yesterday
               </p>
             </CardContent>
@@ -336,13 +336,13 @@ export default function Dashboard() {
               <CardTitle className="text-sm font-medium text-gray-300">
                 Total Revenue
               </CardTitle>
-              <DollarSign className="h-4 w-4 text-green-400" />
+              <DollarSign className="h-4 w-4 text-cyan-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
                 {formatCurrency(stats?.totalRevenue || 0)}
               </div>
-              <p className="text-xs text-green-400">
+              <p className="text-xs text-cyan-400">
                 This month
               </p>
             </CardContent>
@@ -365,7 +365,7 @@ export default function Dashboard() {
                 variant={filter === key ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setFilter(key as any)}
-                className={filter === key && key === 'my-leads' ? 'bg-green-600 hover:bg-green-700' : ''}
+                className={filter === key && key === 'my-leads' ? 'bg-cyan-600 hover:bg-cyan-700' : ''}
               >
                 {label}
               </Button>

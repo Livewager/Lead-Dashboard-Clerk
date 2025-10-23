@@ -45,18 +45,18 @@ export default function AccountPage() {
 
     try {
       // Check if we're in demo mode (no real Supabase connection)
-      if (process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://demo.supabase.co') {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      if (!supabaseUrl || supabaseUrl === 'https://demo.supabase.co' || supabaseUrl.includes('localhost')) {
         // Demo mode - create mock clinic data
         const mockClinic = {
           id: 'demo-clinic-1',
           clerk_user_id: user.id,
-          clinic_name: `${user.firstName} ${user.lastName}` || 'Demo Clinic',
+          clinic_name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'My Clinic',
           email: user.emailAddresses[0]?.emailAddress || 'demo@clinic.com',
           phone: '',
           location: '',
           logo_url: '',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          created_at: new Date().toISOString()
         }
         
         setClinic(mockClinic)
@@ -125,7 +125,8 @@ export default function AccountPage() {
 
     try {
       // Check if we're in demo mode
-      if (process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://demo.supabase.co') {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      if (!supabaseUrl || supabaseUrl === 'https://demo.supabase.co' || supabaseUrl.includes('localhost')) {
         // Demo mode - just update local state
         const updatedClinic = { ...clinic, ...formData }
         setClinic(updatedClinic)
@@ -279,7 +280,7 @@ export default function AccountPage() {
                     </Button>
                     <Button
                       onClick={handleSave}
-                      className="bg-green-600 hover:bg-green-700"
+                      className="bg-cyan-600 hover:bg-cyan-700"
                     >
                       <Save className="h-4 w-4 mr-2" />
                       Save Changes
@@ -377,7 +378,7 @@ export default function AccountPage() {
               <CardContent className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-300">Account Type</span>
-                  <Badge className="bg-green-600">Premium</Badge>
+                  <Badge className="bg-cyan-600">Premium</Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-300">Member Since</span>
@@ -387,7 +388,7 @@ export default function AccountPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-300">Status</span>
-                  <Badge className="bg-green-600">Active</Badge>
+                  <Badge className="bg-cyan-600">Active</Badge>
                 </div>
               </CardContent>
             </Card>

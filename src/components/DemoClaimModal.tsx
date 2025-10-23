@@ -57,7 +57,7 @@ export default function DemoClaimModal({ lead, open, onOpenChange, onSuccess }: 
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2">
-            <CheckCircle className="h-5 w-5 text-green-400" />
+            <CheckCircle className="h-5 w-5 text-cyan-400" />
             <span>Confirm Lead Claim</span>
           </DialogTitle>
           <DialogDescription>
@@ -120,7 +120,7 @@ export default function DemoClaimModal({ lead, open, onOpenChange, onSuccess }: 
               <div className="border-t border-gray-600 pt-2">
                 <div className="flex justify-between text-lg font-bold">
                   <span className="text-white">Total</span>
-                  <span className="text-green-400">{formatCurrency(total)}</span>
+                  <span className="text-cyan-400">{formatCurrency(total)}</span>
                 </div>
               </div>
             </CardContent>
@@ -148,7 +148,7 @@ export default function DemoClaimModal({ lead, open, onOpenChange, onSuccess }: 
           <Button
             onClick={handleClaim}
             disabled={isClaiming}
-            className="w-full sm:w-auto bg-green-600 hover:bg-green-700"
+            className="w-full sm:w-auto bg-cyan-600 hover:bg-cyan-700"
           >
             {isClaiming ? (
               <>

@@ -212,7 +212,7 @@ export default function PreviewDrawer({ lead, open, onOpenChange }: PreviewDrawe
                 {isClaimed && (
                   <>
                     <div className="h-3 w-3 bg-green-500 rounded-full" />
-                    <span className="text-green-400 font-medium">Claimed</span>
+                    <span className="text-cyan-400 font-medium">Claimed</span>
                   </>
                 )}
                 {isBeingClaimed && (

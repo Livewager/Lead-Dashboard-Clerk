@@ -76,7 +76,7 @@ export default function ClaimSuccessModal({
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="mx-auto mb-4 w-16 h-16 bg-green-600 rounded-full flex items-center justify-center"
+              className="mx-auto mb-4 w-16 h-16 bg-cyan-600 rounded-full flex items-center justify-center"
             >
               <CheckCircle className="h-8 w-8 text-white" />
             </motion.div>
@@ -93,7 +93,7 @@ export default function ClaimSuccessModal({
             <Card className="glass-effect">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center">
-                  <CreditCard className="h-5 w-5 mr-2 text-green-400" />
+                  <CreditCard className="h-5 w-5 mr-2 text-cyan-400" />
                   Transaction Details
                 </CardTitle>
               </CardHeader>
@@ -101,7 +101,7 @@ export default function ClaimSuccessModal({
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-400">Transaction ID</span>
                   <div className="flex items-center space-x-2">
-                    <code className="text-xs bg-gray-800 px-2 py-1 rounded text-green-400">
+                    <code className="text-xs bg-gray-800 px-2 py-1 rounded text-cyan-400">
                       {transactionId.slice(0, 8)}...
                     </code>
                     <Button
@@ -117,7 +117,7 @@ export default function ClaimSuccessModal({
                 
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-400">Amount</span>
-                  <span className="text-lg font-bold text-green-400">
+                  <span className="text-lg font-bold text-cyan-400">
                     {formatCurrency(lead.price_cents)}
                   </span>
                 </div>
@@ -189,7 +189,7 @@ export default function ClaimSuccessModal({
             </Button>
             <Button
               onClick={() => onOpenChange(false)}
-              className="flex-1 bg-green-600 hover:bg-green-700"
+              className="flex-1 bg-cyan-600 hover:bg-cyan-700"
             >
               Continue to Dashboard
             </Button>

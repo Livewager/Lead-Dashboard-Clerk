@@ -10,19 +10,19 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 84% 4.9%;
+    --primary: 189 94% 43%; /* Clinical teal */
+    --primary-foreground: 0 0% 100%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 199 89% 48%; /* Professional blue */
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 189 94% 43%;
     --radius: 0.5rem;
   }
 }
@@ -67,18 +67,80 @@
   }
   
   .status-available {
-    @apply bg-green-500/20 border-green-500/30 text-green-400;
+    @apply bg-cyan-500/20 border-cyan-500/30 text-cyan-400;
   }
   
   .status-being-claimed {
-    @apply bg-orange-500/20 border-orange-500/30 text-orange-400;
+    @apply bg-blue-500/20 border-blue-500/30 text-blue-400;
   }
   
   .status-claimed-by-you {
-    @apply bg-blue-500/20 border-blue-500/30 text-blue-400;
+    @apply bg-teal-500/20 border-teal-500/30 text-teal-400;
   }
   
   .status-claimed-by-other {
     @apply bg-gray-500/20 border-gray-500/30 text-gray-400;
   }
+}
+
+/* Clerk UI Customization for Dark Theme */
+.cl-rootBox {
+  width: 100%;
+}
+
+.cl-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
+}
+
+.cl-headerTitle,
+.cl-headerSubtitle,
+.cl-socialButtonsBlockButtonText,
+.cl-formFieldLabel,
+.cl-footerActionLink {
+  color: rgb(226, 232, 240) !important;
+}
+
+.cl-formFieldInput {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.cl-formFieldInput::placeholder {
+  color: rgba(148, 163, 184, 0.5) !important;
+}
+
+.cl-formFieldInput:focus {
+  border-color: hsl(189 94% 43%) !important;
+  box-shadow: 0 0 0 2px hsla(189 94% 43% / 0.2) !important;
+}
+
+.cl-formButtonPrimary {
+  background: hsl(189 94% 43%) !important;
+  color: white !important;
+}
+
+.cl-formButtonPrimary:hover {
+  background: hsl(189 94% 38%) !important;
+}
+
+.cl-socialButtonsBlockButton {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.cl-socialButtonsBlockButton:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.cl-footerActionLink {
+  color: hsl(189 94% 43%) !important;
+}
+
+.cl-footerActionLink:hover {
+  color: hsl(189 94% 38%) !important;
 }
