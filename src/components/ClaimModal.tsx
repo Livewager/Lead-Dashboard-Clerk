@@ -53,70 +53,20 @@ export default function ClaimModal({ lead, open, onOpenChange, onSuccess }: Clai
     setIsClaiming(true)
 
     try {
-      // Check if we're in demo mode
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-      if (!supabaseUrl || supabaseUrl === 'https://demo.supabase.co' || supabaseUrl.includes('localhost')) {
-        // Demo mode - simulate successful claim
-        await new Promise(resolve => setTimeout(resolve, 1500))
-        onSuccess()
-        setIsClaiming(false)
-        return
+      // Use API route to claim lead (bypasses RLS with service role)
+      const response = await fetch('/api/claim-lead', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ leadId: lead.id }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Failed to claim lead')
       }
-
-      // First, get or create clinic record
-      const clinicQuery: any = await supabase
-        .from('clinics')
-        .select('id')
-        .eq('clerk_user_id', user.id)
-        .single()
-
-      if (clinicQuery.error && clinicQuery.error.code !== 'PGRST116') {
-        throw clinicQuery.error
-      }
-
-      let clinicId = clinicQuery.data?.id
-
-      if (!clinicId) {
-        // Create clinic record
-        const clinicResult: any = await supabase
-          .from('clinics')
-          // @ts-ignore - Supabase type inference issue
-          .insert({
-            clerk_user_id: user.id,
-            clinic_name: `${user.firstName} ${user.lastName}`,
-            email: user.emailAddresses[0]?.emailAddress,
-          })
-          .select('id')
-          .single()
-
-        if (clinicResult.error) throw clinicResult.error
-        clinicId = clinicResult.data.id
-      }
-
-      // Create claim record
-      const claimResult: any = await supabase
-        .from('lead_claims')
-        // @ts-ignore - Supabase type inference issue
-        .insert({
-          lead_id: lead.id,
-          clinic_id: clinicId,
-          amount_cents: basePrice,
-          tax_cents: tax,
-          fee_cents: fee,
-          total_cents: total,
-          status: 'succeeded'
-        })
-
-      if (claimResult.error) throw claimResult.error
-
-      // Update lead status
-      const updateResult: any = await supabase
-        .from('leads')
-        // @ts-ignore - Supabase type inference issue
-        .update({ status: 'claimed' })
-        .eq('id', lead.id)
-
-      if (updateResult.error) throw updateResult.error
 
       toast.success('Lead claimed successfully!')
       onSuccess()

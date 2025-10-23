@@ -44,77 +44,23 @@ export default function AccountPage() {
     if (!user) return
 
     try {
-      // Check if we're in demo mode (no real Supabase connection)
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-      if (!supabaseUrl || supabaseUrl === 'https://demo.supabase.co' || supabaseUrl.includes('localhost')) {
-        // Demo mode - create mock clinic data
-        const mockClinic = {
-          id: 'demo-clinic-1',
-          clerk_user_id: user.id,
-          clinic_name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'My Clinic',
-          email: user.emailAddresses[0]?.emailAddress || 'demo@clinic.com',
-          phone: '',
-          location: '',
-          logo_url: '',
-          created_at: new Date().toISOString()
-        }
-        
-        setClinic(mockClinic)
-        setFormData({
-          clinic_name: mockClinic.clinic_name,
-          email: mockClinic.email,
-          phone: mockClinic.phone,
-          location: mockClinic.location,
-          logo_url: mockClinic.logo_url
-        })
-        setIsLoading(false)
-        return
+      // Use API route to fetch profile (bypasses RLS issues)
+      const response = await fetch('/api/profile')
+      const result = await response.json()
+
+      if (!response.ok || result.error) {
+        throw new Error(result.error || 'Failed to load profile')
       }
 
-      const { data, error } = await supabase
-        .from('clinics')
-        .select('*')
-        .eq('clerk_user_id', user.id)
-        .single()
-
-      if (error && error.code !== 'PGRST116') {
-        throw error
-      }
-
-      if (data) {
-        const clinicData = data as Clinic
-        setClinic(clinicData)
-        setFormData({
-          clinic_name: clinicData.clinic_name || '',
-          email: clinicData.email || '',
-          phone: clinicData.phone || '',
-          location: clinicData.location || '',
-          logo_url: clinicData.logo_url || ''
-        })
-      } else {
-        // Create new clinic record
-        const insertResult: any = await supabase
-          .from('clinics')
-          // @ts-ignore - Supabase type inference issue
-          .insert({
-            clerk_user_id: user.id,
-            clinic_name: `${user.firstName} ${user.lastName}`,
-            email: user.emailAddresses[0]?.emailAddress,
-          })
-          .select('*')
-          .single()
-
-        if (insertResult.error) throw insertResult.error
-        const newClinicData = insertResult.data as Clinic
-        setClinic(newClinicData)
-        setFormData({
-          clinic_name: newClinicData.clinic_name || '',
-          email: newClinicData.email || '',
-          phone: newClinicData.phone || '',
-          location: newClinicData.location || '',
-          logo_url: newClinicData.logo_url || ''
-        })
-      }
+      const clinicData = result.clinic as Clinic
+      setClinic(clinicData)
+      setFormData({
+        clinic_name: clinicData.clinic_name || '',
+        email: clinicData.email || '',
+        phone: clinicData.phone || '',
+        location: clinicData.location || '',
+        logo_url: clinicData.logo_url || ''
+      })
     } catch (error) {
       console.error('Error fetching clinic data:', error)
       toast.error('Failed to load clinic information')
@@ -127,24 +73,20 @@ export default function AccountPage() {
     if (!user || !clinic) return
 
     try {
-      // Check if we're in demo mode
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-      if (!supabaseUrl || supabaseUrl === 'https://demo.supabase.co' || supabaseUrl.includes('localhost')) {
-        // Demo mode - just update local state
-        const updatedClinic = { ...clinic, ...formData }
-        setClinic(updatedClinic)
-        toast.success('Profile updated successfully! (Demo mode)')
-        setIsEditing(false)
-        return
+      // Use API route to update profile (bypasses RLS issues)
+      const response = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok || result.error) {
+        throw new Error(result.error || 'Failed to update profile')
       }
-
-      const updateResult: any = await supabase
-        .from('clinics')
-        // @ts-ignore - Supabase type inference issue
-        .update(formData)
-        .eq('id', clinic.id)
-
-      if (updateResult.error) throw updateResult.error
 
       toast.success('Profile updated successfully!')
       setIsEditing(false)
