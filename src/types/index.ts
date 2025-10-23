@@ -23,7 +23,7 @@ export interface Lead {
   summary?: string;
   created_at: string;
   photos?: LeadPhoto[];
-  claim?: LeadClaim;
+  claim?: LeadClaim | LeadClaim[]; // Can be single or array from join
   // Sensitive contact information (only visible after claiming)
   name?: string;
   email?: string;

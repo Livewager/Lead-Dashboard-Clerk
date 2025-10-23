@@ -37,7 +37,14 @@ export default function LeadCard({ lead, onClaim, onPreview, currentClinicId }: 
   const canClaim = lead.status === 'available'
   
   // Check if this lead is claimed by the current user
-  const isClaimedByMe = isClaimed && lead.claim?.clinic_id === currentClinicId
+  // lead.claim is an array from the join, so we need to check the first element
+  const leadClaim = Array.isArray(lead.claim) ? lead.claim[0] : lead.claim
+  const isClaimedByMe = isClaimed && leadClaim?.clinic_id === currentClinicId
+  
+  // Debug logging
+  if (isClaimed && process.env.NODE_ENV === 'development') {
+    console.log('Lead:', lead.id, 'Claimed:', isClaimed, 'By Me:', isClaimedByMe, 'Lead Clinic:', leadClaim?.clinic_id, 'My Clinic:', currentClinicId)
+  }
   
   // Images should be blurred unless claimed by the current user
   const shouldBlurImage = !isClaimedByMe
