@@ -25,9 +25,10 @@ interface LeadCardProps {
   lead: Lead
   onClaim: () => void
   onPreview: () => void
+  currentClinicId?: string
 }
 
-export default function LeadCard({ lead, onClaim, onPreview }: LeadCardProps) {
+export default function LeadCard({ lead, onClaim, onPreview, currentClinicId }: LeadCardProps) {
   const [imageError, setImageError] = useState(false)
   
   const primaryPhoto = lead.photos?.find(photo => photo.is_primary) || lead.photos?.[0]
@@ -36,8 +37,7 @@ export default function LeadCard({ lead, onClaim, onPreview }: LeadCardProps) {
   const canClaim = lead.status === 'available'
   
   // Check if this lead is claimed by the current user
-  // In production, this would check if lead.claim.clinic_id matches current user's clinic_id
-  const isClaimedByMe = isClaimed && lead.claim?.clinic_id
+  const isClaimedByMe = isClaimed && lead.claim?.clinic_id === currentClinicId
   
   // Images should be blurred unless claimed by the current user
   const shouldBlurImage = !isClaimedByMe
@@ -205,15 +205,26 @@ export default function LeadCard({ lead, onClaim, onPreview }: LeadCardProps) {
 
         {/* Actions */}
         <div className="flex space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onPreview}
-            className="flex-1"
-          >
-            <Eye className="h-4 w-4 mr-1" />
-            Preview
-          </Button>
+          {isClaimedByMe ? (
+            <Button
+              size="sm"
+              onClick={onPreview}
+              className="flex-1 bg-cyan-600 hover:bg-cyan-700"
+            >
+              <Eye className="h-4 w-4 mr-1" />
+              View Lead
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onPreview}
+              className="flex-1"
+            >
+              <Eye className="h-4 w-4 mr-1" />
+              Preview
+            </Button>
+          )}
           
           {canClaim && (
             <Button
@@ -236,7 +247,7 @@ export default function LeadCard({ lead, onClaim, onPreview }: LeadCardProps) {
             </Button>
           )}
           
-          {isClaimed && (
+          {isClaimed && !isClaimedByMe && (
             <Button
               size="sm"
               disabled

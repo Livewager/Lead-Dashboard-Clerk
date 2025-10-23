@@ -37,6 +37,25 @@ export default function Dashboard() {
   const [newLead, setNewLead] = useState<Lead | null>(null)
   const [filter, setFilter] = useState<'all' | 'warm' | 'hot' | 'platinum' | 'my-leads'>('all')
   const [transactionId, setTransactionId] = useState('')
+  const [currentClinicId, setCurrentClinicId] = useState<string | undefined>(undefined)
+
+  // Fetch current clinic ID
+  useEffect(() => {
+    const fetchClinicId = async () => {
+      try {
+        const response = await fetch('/api/profile')
+        const result = await response.json()
+        if (result.clinic) {
+          setCurrentClinicId(result.clinic.id)
+        }
+      } catch (error) {
+        console.log('Could not fetch clinic ID')
+      }
+    }
+    if (user) {
+      fetchClinicId()
+    }
+  }, [user])
 
   // Fetch dashboard stats
   const { data: stats, isLoading: statsLoading } = useQuery({
@@ -404,6 +423,7 @@ export default function Dashboard() {
                   lead={lead}
                   onClaim={() => handleClaimLead(lead)}
                   onPreview={() => handlePreviewLead(lead)}
+                  currentClinicId={currentClinicId}
                 />
               </motion.div>
             ))}

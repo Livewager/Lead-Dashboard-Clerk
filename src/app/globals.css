@@ -219,3 +219,63 @@
   color: rgb(226, 232, 240) !important;
   font-weight: 500 !important;
 }
+
+/* Additional Clerk elements - catch all text */
+.cl-internal-b3fm6y,
+.cl-formFieldErrorText,
+.cl-formFieldSuccessText,
+.cl-formFieldInfoText,
+.cl-formFieldHintText,
+.cl-alertText,
+.cl-formHeaderTitle,
+.cl-formHeaderSubtitle,
+.cl-otpCodeFieldInput,
+.cl-selectButton,
+.cl-selectOptionText,
+.cl-menuItem,
+.cl-menuItemText,
+.cl-profileSectionItem,
+.cl-profileSectionItemText,
+.cl-accordionTriggerButton,
+.cl-accordionContent,
+.cl-navbarButton,
+.cl-navbarButtonText {
+  color: rgb(226, 232, 240) !important;
+}
+
+/* Ensure all buttons have visible text */
+.cl-button,
+button[class*="cl-"] {
+  color: rgb(226, 232, 240) !important;
+}
+
+/* Make sure email text is visible */
+.cl-emailAddress,
+.cl-identifier {
+  color: rgb(203, 213, 225) !important;
+}
+
+/* Session list items */
+.cl-sessionPreview,
+.cl-sessionPreviewText {
+  color: rgb(203, 213, 225) !important;
+}
+
+/* Make profile field values visible */
+.cl-profileFieldValue {
+  color: rgb(248, 250, 252) !important;
+}
+
+/* Fallback: any remaining text */
+.cl-card * {
+  color: rgb(226, 232, 240);
+}
+
+.cl-card h1, 
+.cl-card h2, 
+.cl-card h3,
+.cl-card h4,
+.cl-card h5,
+.cl-card h6 {
+  color: rgb(248, 250, 252) !important;
+}
