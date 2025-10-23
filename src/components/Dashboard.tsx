@@ -121,6 +121,7 @@ export default function Dashboard() {
         
         return data || []
       } catch (error) {
+        console.error('Error loading leads:', error)
         // Return demo data if Supabase is not configured
         const demoLeads: Lead[] = [
           {
