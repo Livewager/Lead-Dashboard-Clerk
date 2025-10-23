@@ -9,6 +9,7 @@ export type ThemeName =
   | 'sunset-coral'       // Warm & inviting
   | 'charcoal-mint'      // Modern minimalist
   | 'deep-ocean'         // Calm & trustworthy
+  | 'cloud-white'        // Light theme - Professional daylight
 
 export interface Theme {
   name: ThemeName
@@ -163,6 +164,23 @@ export const themes: Record<ThemeName, Theme> = {
       textSecondary: '#cbd5e1',     // Slate-300
     }
   },
+
+  'cloud-white': {
+    name: 'cloud-white',
+    displayName: 'Cloud White',
+    description: 'Clean & professional light theme for daytime',
+    colors: {
+      primary: '#0891b2',           // Cyan-600
+      primaryHover: '#0e7490',      // Cyan-700
+      primaryLight: '#06b6d4',      // Cyan-500
+      secondary: '#0284c7',         // Sky-600
+      background: '#f8fafc',        // Slate-50
+      backgroundEnd: '#e2e8f0',     // Slate-200
+      cardBg: 'rgba(255, 255, 255, 0.9)',
+      textPrimary: '#0f172a',       // Slate-900
+      textSecondary: '#475569',     // Slate-600
+    }
+  },
 }
 
 export function getTheme(themeName: ThemeName): Theme {
@@ -172,6 +190,7 @@ export function getTheme(themeName: ThemeName): Theme {
 export function applyTheme(themeName: ThemeName) {
   const theme = getTheme(themeName)
   const root = document.documentElement
+  const html = document.querySelector('html')
   
   // Apply CSS variables
   root.style.setProperty('--theme-primary', theme.colors.primary)
@@ -183,6 +202,15 @@ export function applyTheme(themeName: ThemeName) {
   root.style.setProperty('--theme-card-bg', theme.colors.cardBg)
   root.style.setProperty('--theme-text-primary', theme.colors.textPrimary)
   root.style.setProperty('--theme-text-secondary', theme.colors.textSecondary)
+  
+  // Set light/dark class
+  if (themeName === 'cloud-white') {
+    html?.classList.remove('dark')
+    html?.classList.add('light')
+  } else {
+    html?.classList.remove('light')
+    html?.classList.add('dark')
+  }
   
   // Store preference
   if (typeof window !== 'undefined') {
