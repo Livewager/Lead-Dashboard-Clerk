@@ -37,7 +37,8 @@ export default function DemoPreviewDrawer({ lead, open, onOpenChange }: DemoPrev
   const isClaimed = lead.status === 'claimed'
   const isBeingClaimed = lead.status === 'being_claimed'
   const canClaim = lead.status === 'available'
-  const canViewFullImages = isClaimed && lead.claim?.clinic_id
+  const leadClaim = Array.isArray(lead.claim) ? lead.claim[0] : lead.claim
+  const canViewFullImages = isClaimed && leadClaim?.clinic_id
 
   const primaryPhoto = lead.photos?.find(photo => photo.is_primary) || lead.photos?.[0]
   const allPhotos = lead.photos || []
