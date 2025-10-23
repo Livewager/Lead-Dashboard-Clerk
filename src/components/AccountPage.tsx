@@ -93,9 +93,9 @@ export default function AccountPage() {
         })
       } else {
         // Create new clinic record
-        // @ts-ignore - Supabase type inference issue
         const insertResult: any = await supabase
           .from('clinics')
+          // @ts-ignore - Supabase type inference issue
           .insert({
             clerk_user_id: user.id,
             clinic_name: `${user.firstName} ${user.lastName}`,
@@ -138,9 +138,9 @@ export default function AccountPage() {
         return
       }
 
-      // @ts-ignore - Supabase type inference issue
       const updateResult: any = await supabase
         .from('clinics')
+        // @ts-ignore - Supabase type inference issue
         .update(formData)
         .eq('id', clinic.id)
 
