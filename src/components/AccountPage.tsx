@@ -82,13 +82,14 @@ export default function AccountPage() {
       }
 
       if (data) {
-        setClinic(data)
+        const clinicData = data as Clinic
+        setClinic(clinicData)
         setFormData({
-          clinic_name: data.clinic_name || '',
-          email: data.email || '',
-          phone: data.phone || '',
-          location: data.location || '',
-          logo_url: data.logo_url || ''
+          clinic_name: clinicData.clinic_name || '',
+          email: clinicData.email || '',
+          phone: clinicData.phone || '',
+          location: clinicData.location || '',
+          logo_url: clinicData.logo_url || ''
         })
       } else {
         // Create new clinic record
@@ -103,13 +104,14 @@ export default function AccountPage() {
           .single()
 
         if (createError) throw createError
-        setClinic(newClinic)
+        const newClinicData = newClinic as Clinic
+        setClinic(newClinicData)
         setFormData({
-          clinic_name: newClinic.clinic_name || '',
-          email: newClinic.email || '',
-          phone: newClinic.phone || '',
-          location: newClinic.location || '',
-          logo_url: newClinic.logo_url || ''
+          clinic_name: newClinicData.clinic_name || '',
+          email: newClinicData.email || '',
+          phone: newClinicData.phone || '',
+          location: newClinicData.location || '',
+          logo_url: newClinicData.logo_url || ''
         })
       }
     } catch (error) {
