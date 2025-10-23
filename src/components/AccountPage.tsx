@@ -93,7 +93,7 @@ export default function AccountPage() {
         })
       } else {
         // Create new clinic record
-        const { data: newClinic, error: createError } = await (supabase
+        const insertResult: any = await supabase
           .from('clinics')
           .insert({
             clerk_user_id: user.id,
@@ -101,10 +101,10 @@ export default function AccountPage() {
             email: user.emailAddresses[0]?.emailAddress,
           })
           .select('*')
-          .single() as any)
+          .single()
 
-        if (createError) throw createError
-        const newClinicData = newClinic as Clinic
+        if (insertResult.error) throw insertResult.error
+        const newClinicData = insertResult.data as Clinic
         setClinic(newClinicData)
         setFormData({
           clinic_name: newClinicData.clinic_name || '',
@@ -137,12 +137,12 @@ export default function AccountPage() {
         return
       }
 
-      const { error } = await (supabase
+      const updateResult: any = await supabase
         .from('clinics')
-        .update(formData as any)
-        .eq('id', clinic.id) as any)
+        .update(formData)
+        .eq('id', clinic.id)
 
-      if (error) throw error
+      if (updateResult.error) throw updateResult.error
 
       toast.success('Profile updated successfully!')
       setIsEditing(false)
