@@ -4,16 +4,35 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://demo.supaba
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'demo_anon_key'
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'demo_service_key'
 
-// Client-side Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Singleton client instances
+let supabaseInstance: ReturnType<typeof createClient> | null = null
+let supabaseAdminInstance: ReturnType<typeof createClient> | null = null
 
-// Server-side Supabase client with service role key
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
+// Client-side Supabase client (singleton)
+export const supabase = (() => {
+  if (!supabaseInstance) {
+    supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        storageKey: 'clinic-concierge-auth',
+      }
+    })
   }
-})
+  return supabaseInstance
+})()
+
+// Server-side Supabase client with service role key (singleton)
+export const supabaseAdmin = (() => {
+  if (!supabaseAdminInstance) {
+    supabaseAdminInstance = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
+  }
+  return supabaseAdminInstance
+})()
 
 export type Database = {
   public: {
