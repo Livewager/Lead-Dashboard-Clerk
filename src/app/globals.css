@@ -87,64 +87,135 @@
   }
 }
 
-/* Clerk UI Customization for Dark Theme */
+/* Clerk UI Customization for Dark Theme - High Visibility */
 .cl-rootBox {
   width: 100%;
 }
 
 .cl-card {
-  background: rgba(255, 255, 255, 0.05) !important;
-  backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
+  background: rgba(30, 41, 59, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3) !important;
 }
 
-.cl-headerTitle,
-.cl-headerSubtitle,
-.cl-socialButtonsBlockButtonText,
-.cl-formFieldLabel,
-.cl-footerActionLink {
+.cl-headerTitle {
+  color: rgb(248, 250, 252) !important;
+  font-weight: 700 !important;
+  font-size: 1.5rem !important;
+}
+
+.cl-headerSubtitle {
+  color: rgb(203, 213, 225) !important;
+  font-size: 0.95rem !important;
+}
+
+.cl-socialButtonsBlockButtonText {
+  color: rgb(248, 250, 252) !important;
+  font-weight: 600 !important;
+}
+
+.cl-formFieldLabel {
   color: rgb(226, 232, 240) !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  margin-bottom: 0.5rem !important;
 }
 
 .cl-formFieldInput {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(148, 163, 184, 0.4) !important;
+  color: rgb(248, 250, 252) !important;
+  font-size: 1rem !important;
+  padding: 0.75rem !important;
 }
 
 .cl-formFieldInput::placeholder {
-  color: rgba(148, 163, 184, 0.5) !important;
+  color: rgba(203, 213, 225, 0.6) !important;
 }
 
 .cl-formFieldInput:focus {
-  border-color: hsl(189 94% 43%) !important;
-  box-shadow: 0 0 0 2px hsla(189 94% 43% / 0.2) !important;
+  border-color: hsl(189 94% 50%) !important;
+  box-shadow: 0 0 0 3px hsla(189 94% 43% / 0.3) !important;
+  background: rgba(255, 255, 255, 0.2) !important;
 }
 
 .cl-formButtonPrimary {
   background: hsl(189 94% 43%) !important;
   color: white !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  padding: 0.75rem 1.5rem !important;
 }
 
 .cl-formButtonPrimary:hover {
-  background: hsl(189 94% 38%) !important;
+  background: hsl(189 94% 50%) !important;
 }
 
 .cl-socialButtonsBlockButton {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(148, 163, 184, 0.4) !important;
+  color: rgb(248, 250, 252) !important;
+  font-weight: 600 !important;
 }
 
 .cl-socialButtonsBlockButton:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
+  background: rgba(255, 255, 255, 0.25) !important;
 }
 
 .cl-footerActionLink {
-  color: hsl(189 94% 43%) !important;
+  color: hsl(189 94% 50%) !important;
+  font-weight: 600 !important;
 }
 
 .cl-footerActionLink:hover {
-  color: hsl(189 94% 38%) !important;
+  color: hsl(189 94% 60%) !important;
+}
+
+.cl-footerActionText {
+  color: rgb(203, 213, 225) !important;
+}
+
+.cl-dividerLine {
+  background: rgba(148, 163, 184, 0.3) !important;
+}
+
+.cl-dividerText {
+  color: rgb(203, 213, 225) !important;
+}
+
+.cl-identityPreviewText {
+  color: rgb(226, 232, 240) !important;
+}
+
+.cl-profileSectionTitle {
+  color: rgb(248, 250, 252) !important;
+  font-weight: 600 !important;
+}
+
+.cl-profileSectionContent {
+  color: rgb(226, 232, 240) !important;
+}
+
+.cl-badge {
+  background: rgba(6, 182, 212, 0.2) !important;
+  color: rgb(103, 232, 249) !important;
+}
+
+.cl-userButtonPopoverCard {
+  background: rgba(30, 41, 59, 0.98) !important;
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+}
+
+.cl-userButtonPopoverActionButton {
+  color: rgb(226, 232, 240) !important;
+}
+
+.cl-userButtonPopoverActionButton:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.cl-userButtonPopoverActionButtonText {
+  color: rgb(226, 232, 240) !important;
+  font-weight: 500 !important;
 }
