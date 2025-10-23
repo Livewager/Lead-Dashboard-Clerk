@@ -53,6 +53,16 @@ export default function ClaimModal({ lead, open, onOpenChange, onSuccess }: Clai
     setIsClaiming(true)
 
     try {
+      // Check if we're in demo mode
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      if (!supabaseUrl || supabaseUrl === 'https://demo.supabase.co' || supabaseUrl.includes('localhost')) {
+        // Demo mode - simulate successful claim
+        await new Promise(resolve => setTimeout(resolve, 1500))
+        onSuccess()
+        setIsClaiming(false)
+        return
+      }
+
       // First, get or create clinic record
       const { data: clinic, error: clinicError } = await supabase
         .from('clinics')
@@ -130,7 +140,7 @@ export default function ClaimModal({ lead, open, onOpenChange, onSuccess }: Clai
 
         <div className="space-y-4">
           {/* Lead Summary */}
-          <Card className="glass-effect">
+          <Card className="modal-glass">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <Badge className={`${getTierColor(lead.tier)} text-xs`}>
@@ -156,7 +166,7 @@ export default function ClaimModal({ lead, open, onOpenChange, onSuccess }: Clai
           </Card>
 
           {/* Pricing Breakdown */}
-          <Card className="glass-effect">
+          <Card className="modal-glass">
             <CardHeader>
               <CardTitle className="text-lg">Pricing Breakdown</CardTitle>
             </CardHeader>

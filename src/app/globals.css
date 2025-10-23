@@ -43,7 +43,11 @@
   }
   
   .glass-effect {
-    @apply bg-white/5 backdrop-blur-sm border border-white/10;
+    @apply bg-white/10 backdrop-blur-sm border border-white/20;
+  }
+  
+  .modal-glass {
+    @apply bg-gray-800/90 backdrop-blur-md border border-white/30;
   }
   
   .premium-shadow {
