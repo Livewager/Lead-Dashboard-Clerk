@@ -67,3 +67,28 @@ export function getStatusDisplayName(status: string): string {
       return 'Unknown'
   }
 }
+
+export function maskName(name?: string): string {
+  if (!name) return '••••••••';
+  const words = name.split(' ');
+  if (words.length === 1) {
+    return name.charAt(0) + '••••••';
+  }
+  return words.map(word => word.charAt(0) + '••••').join(' ');
+}
+
+export function maskEmail(email?: string): string {
+  if (!email) return '••••@••••.com';
+  const [localPart, domain] = email.split('@');
+  if (!domain) return '••••@••••.com';
+  const maskedLocal = localPart.slice(0, Math.min(2, localPart.length)) + '••••';
+  return `${maskedLocal}@${domain}`;
+}
+
+export function maskPhone(phone?: string): string {
+  if (!phone) return '(•••) •••-••••';
+  // Show only last 4 digits
+  const cleaned = phone.replace(/\D/g, '');
+  if (cleaned.length < 4) return '(•••) •••-••••';
+  return `(•••) •••-${cleaned.slice(-4)}`;
+}

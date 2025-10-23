@@ -13,9 +13,11 @@ import {
   CheckCircle,
   Clock,
   User,
-  Sparkles
+  Sparkles,
+  Mail,
+  Phone
 } from 'lucide-react'
-import { formatCurrency, formatScore, getTierColor, getStatusColor, getTierDisplayName, getStatusDisplayName } from '@/lib/utils'
+import { formatCurrency, formatScore, getTierColor, getStatusColor, getTierDisplayName, getStatusDisplayName, maskName, maskEmail, maskPhone } from '@/lib/utils'
 import { Lead } from '@/types'
 import Image from 'next/image'
 
@@ -161,6 +163,28 @@ export default function LeadCard({ lead, onClaim, onPreview }: LeadCardProps) {
               {lead.summary}
             </p>
           )}
+
+          {/* Masked Contact Information */}
+          <div className="space-y-1 bg-gray-800/30 p-2 rounded-lg">
+            <div className="flex items-center space-x-2 text-xs">
+              <User className="h-3 w-3 text-gray-400" />
+              <span className={`${isClaimed ? 'text-gray-200' : 'text-gray-400'}`}>
+                {isClaimed ? (lead.name || 'John Doe') : maskName(lead.name)}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2 text-xs">
+              <Mail className="h-3 w-3 text-gray-400" />
+              <span className={`${isClaimed ? 'text-gray-200' : 'text-gray-400'}`}>
+                {isClaimed ? (lead.email || 'john@example.com') : maskEmail(lead.email)}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2 text-xs">
+              <Phone className="h-3 w-3 text-gray-400" />
+              <span className={`${isClaimed ? 'text-gray-200' : 'text-gray-400'}`}>
+                {isClaimed ? (lead.phone || '(555) 123-4567') : maskPhone(lead.phone)}
+              </span>
+            </div>
+          </div>
 
           <div className="flex items-center justify-between pt-2">
             <div className="text-lg font-bold text-white">

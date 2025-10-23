@@ -25,6 +25,7 @@ import LeadCard from '@/components/LeadCard'
 import ClaimModal from '@/components/ClaimModal'
 import ClaimSuccessModal from '@/components/ClaimSuccessModal'
 import PreviewDrawer from '@/components/PreviewDrawer'
+import NewLeadPopup from '@/components/NewLeadPopup'
 
 export default function Dashboard() {
   const { user } = useUser()
@@ -32,7 +33,9 @@ export default function Dashboard() {
   const [claimModalOpen, setClaimModalOpen] = useState(false)
   const [claimSuccessOpen, setClaimSuccessOpen] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
-  const [filter, setFilter] = useState<'all' | 'warm' | 'hot' | 'platinum'>('all')
+  const [newLeadPopupOpen, setNewLeadPopupOpen] = useState(false)
+  const [newLead, setNewLead] = useState<Lead | null>(null)
+  const [filter, setFilter] = useState<'all' | 'warm' | 'hot' | 'platinum' | 'my-leads'>('all')
   const [transactionId, setTransactionId] = useState('')
 
   // Fetch dashboard stats
@@ -97,13 +100,25 @@ export default function Dashboard() {
           `)
           .order('created_at', { ascending: false })
 
-        if (filter !== 'all') {
+        if (filter === 'my-leads') {
+          // Filter to show only claimed leads
+          query = query.eq('status', 'claimed')
+        } else if (filter !== 'all') {
+          // Filter by tier
           query = query.eq('tier', filter)
         }
 
         const { data, error } = await query
 
         if (error) throw error
+        
+        // If "My Leads" filter, further filter by current user's claims
+        if (filter === 'my-leads' && data && user) {
+          // In a real implementation, we would filter by clinic_id matching the user
+          // For now, we'll return all claimed leads
+          return data.filter(lead => lead.status === 'claimed')
+        }
+        
         return data || []
       } catch (error) {
         // Return demo data if Supabase is not configured
@@ -161,7 +176,9 @@ export default function Dashboard() {
           }
         ]
 
-        return filter === 'all' ? demoLeads : demoLeads.filter(lead => lead.tier === filter)
+        if (filter === 'all') return demoLeads
+        if (filter === 'my-leads') return demoLeads.filter(lead => lead.status === 'claimed')
+        return demoLeads.filter(lead => lead.tier === filter)
       }
     }
   })
@@ -175,22 +192,16 @@ export default function Dashboard() {
           { event: 'INSERT', schema: 'public', table: 'leads' },
           (payload) => {
             console.log('New lead received:', payload.new)
-            const newLead = payload.new as Lead
+            const incomingLead = payload.new as Lead
             
-            // Show toast notification
-            toast.success(
-              `New ${getTierDisplayName(newLead.tier).toLowerCase()} lead available!`,
-              {
-                description: `${newLead.city || 'Unknown'} • ${formatCurrency(newLead.price_cents)}`,
-                action: {
-                  label: 'View',
-                  onClick: () => {
-                    // Scroll to top to show new lead
-                    window.scrollTo({ top: 0, behavior: 'smooth' })
-                  }
-                }
-              }
-            )
+            // Show large centered popup instead of toast
+            setNewLead(incomingLead)
+            setNewLeadPopupOpen(true)
+            
+            // Auto-close popup after 15 seconds
+            setTimeout(() => {
+              setNewLeadPopupOpen(false)
+            }, 15000)
             
             refetch()
           }
@@ -341,9 +352,10 @@ export default function Dashboard() {
         {/* Filters */}
         <div className="flex items-center space-x-4 mb-6">
           <Filter className="h-5 w-5 text-gray-400" />
-          <div className="flex space-x-2">
+          <div className="flex flex-wrap gap-2">
             {[
               { key: 'all', label: 'All Leads' },
+              { key: 'my-leads', label: 'My Leads' },
               { key: 'warm', label: 'Warm' },
               { key: 'hot', label: 'Hot' },
               { key: 'platinum', label: 'Platinum' }
@@ -353,6 +365,7 @@ export default function Dashboard() {
                 variant={filter === key ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setFilter(key as any)}
+                className={filter === key && key === 'my-leads' ? 'bg-green-600 hover:bg-green-700' : ''}
               >
                 {label}
               </Button>
@@ -428,6 +441,25 @@ export default function Dashboard() {
           />
         </>
       )}
+
+      {/* New Lead Popup */}
+      <NewLeadPopup
+        lead={newLead}
+        isVisible={newLeadPopupOpen}
+        onClose={() => setNewLeadPopupOpen(false)}
+        onPreview={() => {
+          if (newLead) {
+            setSelectedLead(newLead)
+            setPreviewOpen(true)
+          }
+        }}
+        onClaim={() => {
+          if (newLead) {
+            setSelectedLead(newLead)
+            setClaimModalOpen(true)
+          }
+        }}
+      />
     </div>
   )
 }

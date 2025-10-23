@@ -24,6 +24,10 @@ export interface Lead {
   created_at: string;
   photos?: LeadPhoto[];
   claim?: LeadClaim;
+  // Sensitive contact information (only visible after claiming)
+  name?: string;
+  email?: string;
+  phone?: string;
 }
 
 export interface LeadPhoto {
