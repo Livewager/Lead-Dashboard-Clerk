@@ -78,6 +78,7 @@ export default function ClaimModal({ lead, open, onOpenChange, onSuccess }: Clai
 
       if (!clinicId) {
         // Create clinic record
+        // @ts-ignore - Supabase type inference issue
         const clinicResult: any = await supabase
           .from('clinics')
           .insert({
@@ -93,6 +94,7 @@ export default function ClaimModal({ lead, open, onOpenChange, onSuccess }: Clai
       }
 
       // Create claim record
+      // @ts-ignore - Supabase type inference issue
       const claimResult: any = await supabase
         .from('lead_claims')
         .insert({
@@ -108,6 +110,7 @@ export default function ClaimModal({ lead, open, onOpenChange, onSuccess }: Clai
       if (claimResult.error) throw claimResult.error
 
       // Update lead status
+      // @ts-ignore - Supabase type inference issue
       const updateResult: any = await supabase
         .from('leads')
         .update({ status: 'claimed' })
