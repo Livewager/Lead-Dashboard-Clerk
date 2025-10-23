@@ -109,7 +109,11 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Deployment
 
-1. **Deploy to Vercel**
+**🚀 Live Project**: [https://super-lead-dashboard.vercel.app](https://super-lead-dashboard.vercel.app)
+
+**Project ID**: `prj_YkGRPBVW2AIDtXcLVgKCBPgcJUDp`
+
+1. **Deploy to Vercel** ✅
    ```bash
    npx vercel
    ```
