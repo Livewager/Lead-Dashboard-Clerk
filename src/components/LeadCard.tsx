@@ -138,29 +138,50 @@ export default function LeadCard({ lead, onClaim, onPreview, currentClinicId }: 
 
           {/* Additional Image Thumbnails */}
           {lead.photos && lead.photos.length > 1 && (
-            <div className="flex space-x-2">
-              {lead.photos.slice(0, 3).map((photo, index) => (
-                <div key={photo.id} className="relative w-12 h-12 rounded-md overflow-hidden bg-gray-700">
-                  <Image
-                    src={photo.url}
-                    alt={`Lead photo ${index + 1}`}
-                    fill
-                    className={`object-cover transition-all duration-300 ${
-                      shouldBlurImage ? 'blur-sm' : ''
-                    }`}
-                  />
-                  {shouldBlurImage && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <Lock className="h-3 w-3 text-white" />
-                    </div>
-                  )}
-                </div>
-              ))}
-              {lead.photos.length > 3 && (
-                <div className="w-12 h-12 rounded-md bg-gray-700 flex items-center justify-center">
-                  <span className="text-xs text-gray-400">+{lead.photos.length - 3}</span>
-                </div>
-              )}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-gray-400 font-medium">
+                  {lead.photos.length} Photos Available
+                </p>
+                {!isClaimedByMe && (
+                  <Lock className="h-3 w-3 text-gray-500" />
+                )}
+              </div>
+              <div className="flex space-x-2">
+                {lead.photos.slice(0, 4).map((photo, index) => (
+                  <motion.div
+                    key={photo.id}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="relative w-14 h-14 rounded-lg overflow-hidden bg-gray-800 border border-white/10 hover:border-cyan-500/50 transition-colors"
+                  >
+                    <Image
+                      src={photo.url}
+                      alt={`Photo ${index + 1}`}
+                      fill
+                      className={`object-cover transition-all duration-300 ${
+                        shouldBlurImage ? 'blur-sm' : ''
+                      }`}
+                    />
+                    {shouldBlurImage && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <Lock className="h-3 w-3 text-white/80" />
+                      </div>
+                    )}
+                    {photo.is_primary && (
+                      <div className="absolute top-1 left-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+                {lead.photos.length > 4 && (
+                  <div className="w-14 h-14 rounded-lg bg-gray-800/50 border border-white/10 flex items-center justify-center">
+                    <span className="text-xs text-cyan-400 font-semibold">+{lead.photos.length - 4}</span>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

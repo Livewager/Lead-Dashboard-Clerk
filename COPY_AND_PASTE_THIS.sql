@@ -134,29 +134,92 @@ INSERT INTO public.leads (tier, status, price_cents, score, city, region, summar
 ('hot', 'available', 5200, 91.3, 'Surrey', 'South Surrey', 'Advanced laser treatment consultation', 'Michelle Brown', 'mbrown@email.com', '(604) 555-0567'),
 ('platinum', 'available', 8500, 98.7, 'Coquitlam', 'Burquitlam', 'Full body aesthetic transformation package', 'Jennifer Taylor', 'j.taylor@email.com', '(778) 555-0890');
 
--- Add photos for leads
+-- Add photos for leads (primary + additional photos)
+
+-- Vancouver lead - 4 photos
 INSERT INTO public.lead_photos (lead_id, url, is_primary)
 SELECT id, 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face', true
 FROM public.leads WHERE city = 'Vancouver';
 
 INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=400&fit=crop&crop=face', false
+FROM public.leads WHERE city = 'Vancouver';
+
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=400&fit=crop&crop=face', false
+FROM public.leads WHERE city = 'Vancouver';
+
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&crop=face', false
+FROM public.leads WHERE city = 'Vancouver';
+
+-- Burnaby lead - 3 photos
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
 SELECT id, 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face', true
 FROM public.leads WHERE city = 'Burnaby';
 
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=400&fit=crop&crop=face', false
+FROM public.leads WHERE city = 'Burnaby';
+
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop&crop=face', false
+FROM public.leads WHERE city = 'Burnaby';
+
+-- West Vancouver lead - 4 photos
 INSERT INTO public.lead_photos (lead_id, url, is_primary)
 SELECT id, 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face', true
 FROM public.leads WHERE city = 'West Vancouver';
 
 INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face', false
+FROM public.leads WHERE city = 'West Vancouver';
+
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=400&fit=crop&crop=face', false
+FROM public.leads WHERE city = 'West Vancouver';
+
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=400&h=400&fit=crop&crop=face', false
+FROM public.leads WHERE city = 'West Vancouver';
+
+-- Richmond lead - 2 photos
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
 SELECT id, 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face', true
 FROM public.leads WHERE city = 'Richmond';
 
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=400&fit=crop&crop=face', false
+FROM public.leads WHERE city = 'Richmond';
+
+-- Surrey lead - 3 photos
 INSERT INTO public.lead_photos (lead_id, url, is_primary)
 SELECT id, 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face', true
 FROM public.leads WHERE city = 'Surrey';
 
 INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&h=400&fit=crop&crop=face', false
+FROM public.leads WHERE city = 'Surrey';
+
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=400&h=400&fit=crop&crop=face', false
+FROM public.leads WHERE city = 'Surrey';
+
+-- Coquitlam lead - 4 photos
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
 SELECT id, 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop&crop=face', true
+FROM public.leads WHERE city = 'Coquitlam';
+
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=400&h=400&fit=crop&crop=face', false
+FROM public.leads WHERE city = 'Coquitlam';
+
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1532170579297-281918c8ae72?w=400&h=400&fit=crop&crop=face', false
+FROM public.leads WHERE city = 'Coquitlam';
+
+INSERT INTO public.lead_photos (lead_id, url, is_primary)
+SELECT id, 'https://images.unsplash.com/photo-1590086782957-93c06ef21604?w=400&h=400&fit=crop&crop=face', false
 FROM public.leads WHERE city = 'Coquitlam';
 
 -- Done! Your database is ready.
