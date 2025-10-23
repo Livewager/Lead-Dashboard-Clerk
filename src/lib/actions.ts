@@ -13,20 +13,23 @@ export async function claimLead(leadId: string) {
 
   try {
     // Get or create clinic
-    let { data: clinic, error: clinicError } = await supabaseAdmin
+    const clinicQuery: any = await supabaseAdmin
       .from('clinics')
       .select('id')
       .eq('clerk_user_id', userId)
       .single()
 
-    if (clinicError && clinicError.code !== 'PGRST116') {
-      throw clinicError
+    if (clinicQuery.error && clinicQuery.error.code !== 'PGRST116') {
+      throw clinicQuery.error
     }
+
+    let clinic = clinicQuery.data
 
     if (!clinic) {
       // Create clinic record
-      const { data: newClinic, error: createError } = await supabaseAdmin
+      const clinicCreate: any = await supabaseAdmin
         .from('clinics')
+        // @ts-ignore - Supabase type inference issue
         .insert({
           clerk_user_id: userId,
           clinic_name: 'New Clinic', // This would be updated later
@@ -34,19 +37,21 @@ export async function claimLead(leadId: string) {
         .select('id')
         .single()
 
-      if (createError) throw createError
-      clinic = newClinic
+      if (clinicCreate.error) throw clinicCreate.error
+      clinic = clinicCreate.data
     }
 
     // Get lead details
-    const { data: lead, error: leadError } = await supabaseAdmin
+    const leadQuery: any = await supabaseAdmin
       .from('leads')
       .select('*')
       .eq('id', leadId)
       .single()
 
-    if (leadError) throw leadError
-    if (!lead) throw new Error('Lead not found')
+    if (leadQuery.error) throw leadQuery.error
+    if (!leadQuery.data) throw new Error('Lead not found')
+    
+    const lead = leadQuery.data
 
     if (lead.status !== 'available') {
       throw new Error('Lead is no longer available')
@@ -61,8 +66,9 @@ export async function claimLead(leadId: string) {
     const total = basePrice + tax + fee
 
     // Create claim record
-    const { error: claimError } = await supabaseAdmin
+    const claimCreate: any = await supabaseAdmin
       .from('lead_claims')
+      // @ts-ignore - Supabase type inference issue
       .insert({
         lead_id: leadId,
         clinic_id: clinic.id,
@@ -73,15 +79,16 @@ export async function claimLead(leadId: string) {
         status: 'succeeded'
       })
 
-    if (claimError) throw claimError
+    if (claimCreate.error) throw claimCreate.error
 
     // Update lead status
-    const { error: updateError } = await supabaseAdmin
+    const leadUpdate: any = await supabaseAdmin
       .from('leads')
+      // @ts-ignore - Supabase type inference issue
       .update({ status: 'claimed' })
       .eq('id', leadId)
 
-    if (updateError) throw updateError
+    if (leadUpdate.error) throw leadUpdate.error
 
     revalidatePath('/')
     return { success: true }
