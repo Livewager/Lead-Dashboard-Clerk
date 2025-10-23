@@ -64,17 +64,17 @@ export default function ClaimModal({ lead, open, onOpenChange, onSuccess }: Clai
       }
 
       // First, get or create clinic record
-      const { data: clinic, error: clinicError } = await supabase
+      const clinicQuery: any = await supabase
         .from('clinics')
         .select('id')
         .eq('clerk_user_id', user.id)
         .single()
 
-      if (clinicError && clinicError.code !== 'PGRST116') {
-        throw clinicError
+      if (clinicQuery.error && clinicQuery.error.code !== 'PGRST116') {
+        throw clinicQuery.error
       }
 
-      let clinicId = clinic?.id
+      let clinicId = clinicQuery.data?.id
 
       if (!clinicId) {
         // Create clinic record
