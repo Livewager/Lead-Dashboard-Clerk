@@ -23,6 +23,7 @@ export async function GET() {
     if (clinicQuery.error && clinicQuery.error.code === 'PGRST116') {
       const clinicCreate: any = await supabaseAdmin
         .from('clinics')
+        // @ts-ignore
         .insert({
           clerk_user_id: userId,
           clinic_name: `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'My Clinic',
@@ -76,6 +77,7 @@ export async function PUT(request: NextRequest) {
     // Update clinic using service role
     const updateResult: any = await supabaseAdmin
       .from('clinics')
+      // @ts-ignore
       .update(updates)
       .eq('id', clinicQuery.data.id)
       .select('*')
