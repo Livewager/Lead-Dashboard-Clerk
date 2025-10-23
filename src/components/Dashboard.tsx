@@ -43,30 +43,31 @@ export default function Dashboard() {
     queryKey: ['dashboard-stats'],
     queryFn: async (): Promise<DashboardStats> => {
       try {
-        const { data, error } = await supabase
+        const result: any = await supabase
           .from('leads')
           .select('*')
         
-        if (error) throw error
+        if (result.error) throw result.error
+        const data = result.data || []
 
         const now = new Date()
         const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
         
-        const newLeads24h = data.filter(lead => 
+        const newLeads24h = data.filter((lead: any) => 
           new Date(lead.created_at) > yesterday
         ).length
 
-        const availableNow = data.filter(lead => 
+        const availableNow = data.filter((lead: any) => 
           lead.status === 'available'
         ).length
 
         const averageScore = data.length > 0 
-          ? data.reduce((sum, lead) => sum + lead.score, 0) / data.length 
+          ? data.reduce((sum: number, lead: any) => sum + lead.score, 0) / data.length 
           : 0
 
         const totalRevenue = data
-          .filter(lead => lead.status === 'claimed')
-          .reduce((sum, lead) => sum + lead.price_cents, 0)
+          .filter((lead: any) => lead.status === 'claimed')
+          .reduce((sum: number, lead: any) => sum + lead.price_cents, 0)
 
         return {
           newLeads24h,
@@ -108,18 +109,19 @@ export default function Dashboard() {
           query = query.eq('tier', filter)
         }
 
-        const { data, error } = await query
+        const result: any = await query
 
-        if (error) throw error
+        if (result.error) throw result.error
+        const data = result.data || []
         
         // If "My Leads" filter, further filter by current user's claims
         if (filter === 'my-leads' && data && user) {
           // In a real implementation, we would filter by clinic_id matching the user
           // For now, we'll return all claimed leads
-          return data.filter(lead => lead.status === 'claimed')
+          return data.filter((lead: any) => lead.status === 'claimed')
         }
         
-        return data || []
+        return data
       } catch (error) {
         console.error('Error loading leads:', error)
         // Return demo data if Supabase is not configured
