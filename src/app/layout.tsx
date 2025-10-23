@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from 'sonner'
-import DemoNavigation from '@/components/DemoNavigation'
+import Navigation from '@/components/Navigation'
 import QueryProvider from '@/components/QueryProvider'
 import './globals.css'
 
@@ -18,19 +19,21 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className={inter.className}>
-        <QueryProvider>
-          <DemoNavigation />
-          {children}
-          <Toaster 
-            position="top-right"
-            theme="dark"
-            richColors
-            closeButton
-          />
-        </QueryProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" className="dark">
+        <body className={inter.className}>
+          <QueryProvider>
+            <Navigation />
+            {children}
+            <Toaster 
+              position="top-right"
+              theme="dark"
+              richColors
+              closeButton
+            />
+          </QueryProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

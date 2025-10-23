@@ -1,6 +1,15 @@
+import { auth } from '@clerk/nextjs'
 import { redirect } from 'next/navigation'
+import LandingPage from '@/components/LandingPage'
 
 export default async function HomePage() {
-  // Redirect to demo page for local testing
-  redirect('/demo')
+  const { userId } = await auth()
+  
+  // If user is signed in, redirect to dashboard
+  if (userId) {
+    redirect('/dashboard')
+  }
+
+  // Otherwise show landing page
+  return <LandingPage />
 }
