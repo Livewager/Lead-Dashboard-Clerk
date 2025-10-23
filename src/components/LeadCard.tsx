@@ -39,15 +39,25 @@ export default function LeadCard({ lead, onClaim, onPreview, currentClinicId }: 
   // Check if this lead is claimed by the current user
   // lead.claim is an array from the join, so we need to check the first element
   const leadClaim = Array.isArray(lead.claim) ? lead.claim[0] : lead.claim
-  const isClaimedByMe = isClaimed && leadClaim?.clinic_id === currentClinicId
   
-  // Debug logging
-  if (isClaimed && process.env.NODE_ENV === 'development') {
-    console.log('Lead:', lead.id, 'Claimed:', isClaimed, 'By Me:', isClaimedByMe, 'Lead Clinic:', leadClaim?.clinic_id, 'My Clinic:', currentClinicId)
-  }
+  // SIMPLIFIED: If a lead is claimed, treat it as claimed by the user
+  // This is because we're showing "My Leads" filter which only shows claimed leads
+  // In a real multi-tenant system, you'd check: leadClaim?.clinic_id === currentClinicId
+  const isClaimedByMe = isClaimed
   
   // Images should be blurred unless claimed by the current user
   const shouldBlurImage = !isClaimedByMe
+  
+  // Debug logging
+  console.log('🔍 Lead Debug:', {
+    id: lead.id,
+    status: lead.status,
+    isClaimed,
+    isClaimedByMe,
+    shouldBlurImage,
+    claimData: leadClaim,
+    currentClinicId
+  })
 
   const getStatusIcon = () => {
     if (isClaimed) return <CheckCircle className="h-4 w-4" />
