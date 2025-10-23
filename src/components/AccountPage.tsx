@@ -93,7 +93,7 @@ export default function AccountPage() {
         })
       } else {
         // Create new clinic record
-        const { data: newClinic, error: createError } = await supabase
+        const { data: newClinic, error: createError } = await (supabase
           .from('clinics')
           .insert({
             clerk_user_id: user.id,
@@ -101,7 +101,7 @@ export default function AccountPage() {
             email: user.emailAddresses[0]?.emailAddress,
           })
           .select('*')
-          .single()
+          .single() as any)
 
         if (createError) throw createError
         const newClinicData = newClinic as Clinic
@@ -137,10 +137,10 @@ export default function AccountPage() {
         return
       }
 
-      const { error } = await supabase
+      const { error } = await (supabase
         .from('clinics')
-        .update(formData)
-        .eq('id', clinic.id)
+        .update(formData as any)
+        .eq('id', clinic.id) as any)
 
       if (error) throw error
 

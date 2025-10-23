@@ -78,7 +78,7 @@ export default function ClaimModal({ lead, open, onOpenChange, onSuccess }: Clai
 
       if (!clinicId) {
         // Create clinic record
-        const { data: newClinic, error: createError } = await supabase
+        const { data: newClinic, error: createError } = await (supabase
           .from('clinics')
           .insert({
             clerk_user_id: user.id,
@@ -86,14 +86,14 @@ export default function ClaimModal({ lead, open, onOpenChange, onSuccess }: Clai
             email: user.emailAddresses[0]?.emailAddress,
           })
           .select('id')
-          .single()
+          .single() as any)
 
         if (createError) throw createError
         clinicId = newClinic.id
       }
 
       // Create claim record
-      const { error: claimError } = await supabase
+      const { error: claimError } = await (supabase
         .from('lead_claims')
         .insert({
           lead_id: lead.id,
@@ -103,15 +103,15 @@ export default function ClaimModal({ lead, open, onOpenChange, onSuccess }: Clai
           fee_cents: fee,
           total_cents: total,
           status: 'succeeded'
-        })
+        }) as any)
 
       if (claimError) throw claimError
 
       // Update lead status
-      const { error: updateError } = await supabase
+      const { error: updateError } = await (supabase
         .from('leads')
-        .update({ status: 'claimed' })
-        .eq('id', lead.id)
+        .update({ status: 'claimed' as any })
+        .eq('id', lead.id) as any)
 
       if (updateError) throw updateError
 
