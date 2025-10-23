@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { Clinic } from '@/types'
+import ThemeSwitcher from '@/components/ThemeSwitcher'
 
 export default function AccountPage() {
   const { user } = useUser()
@@ -235,6 +236,9 @@ export default function AccountPage() {
                 )}
               </CardContent>
             </Card>
+
+            {/* Theme Switcher */}
+            <ThemeSwitcher />
 
             {/* Billing Preferences */}
             <Card className="glass-effect premium-shadow">
