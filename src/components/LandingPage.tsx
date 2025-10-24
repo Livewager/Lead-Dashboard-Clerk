@@ -388,16 +388,13 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="relative h-8 w-8">
-                  <Image
-                    src="/logo.png"
-                    alt="Clinic Concierge"
-                    fill
-                    className="object-contain brightness-0 invert"
-                  />
-                </div>
-                <span className="text-xl font-bold text-white">Clinic Concierge</span>
+              <div className="relative h-10 w-32 mb-4">
+                <Image
+                  src="/logo.png"
+                  alt="Clinic Concierge"
+                  fill
+                  className="object-contain object-left brightness-0 invert"
+                />
               </div>
               <p className="text-gray-400">
                 Premium lead management for beauty clinics

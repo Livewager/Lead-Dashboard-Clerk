@@ -43,20 +43,17 @@ export default function Navigation() {
           {/* Logo */}
           <Link 
             href={user ? "/dashboard" : "/"} 
-            className="flex items-center space-x-3 group"
+            className="flex items-center group"
           >
-            <div className="relative h-10 w-10 group-hover:scale-105 transition-transform">
+            <div className="relative h-12 w-48 group-hover:scale-105 transition-transform">
               <Image
                 src="/logo.png"
                 alt="Clinic Concierge"
                 fill
-                className="object-contain brightness-0 invert"
+                className="object-contain object-left brightness-0 invert"
                 priority
               />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              Clinic Concierge
-            </span>
           </Link>
 
           {/* Desktop Navigation */}

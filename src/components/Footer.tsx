@@ -14,18 +14,13 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Brand */}
             <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="relative h-10 w-10">
-                  <Image
-                    src="/logo.png"
-                    alt="Clinic Concierge"
-                    fill
-                    className="object-contain brightness-0 invert"
-                  />
-                </div>
-                <span className="text-lg font-bold text-white">
-                  Clinic Concierge
-                </span>
+              <div className="relative h-12 w-40">
+                <Image
+                  src="/logo.png"
+                  alt="Clinic Concierge"
+                  fill
+                  className="object-contain object-left brightness-0 invert"
+                />
               </div>
               <p className="text-gray-400 text-sm leading-relaxed">
                 Premium lead management for beauty clinics. Grow your business with qualified, verified leads.
