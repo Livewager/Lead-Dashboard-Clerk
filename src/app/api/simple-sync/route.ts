@@ -6,6 +6,7 @@ export async function GET() {
     // Simple test: Can we create a lead?
     const testLead: any = await supabaseAdmin
       .from('leads')
+      // @ts-ignore
       .insert({
         tier: 'warm',
         status: 'available',
@@ -30,6 +31,7 @@ export async function GET() {
     // Success - add a photo
     await supabaseAdmin
       .from('lead_photos')
+      // @ts-ignore
       .insert({
         lead_id: testLead.data.id,
         url: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
