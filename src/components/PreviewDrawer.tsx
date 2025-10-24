@@ -25,6 +25,7 @@ import {
 import { formatCurrency, formatScore, getTierColor, getTierDisplayName, maskName, maskEmail, maskPhone } from '@/lib/utils'
 import { Lead } from '@/types'
 import Image from 'next/image'
+import QualityScoreInfo from '@/components/QualityScoreInfo'
 
 interface PreviewDrawerProps {
   lead: Lead
@@ -148,7 +149,10 @@ export default function PreviewDrawer({ lead, open, onOpenChange }: PreviewDrawe
                       </div>
                       <div>
                         <p className="text-white font-semibold text-lg">Quality Score</p>
-                        <p className="text-yellow-400 text-2xl font-bold">{formatScore(lead.score)}/100</p>
+                        <div className="flex items-center space-x-2">
+                          <p className="text-yellow-400 text-2xl font-bold">{formatScore(lead.score)}/100</p>
+                          <QualityScoreInfo score={lead.score} />
+                        </div>
                       </div>
                     </div>
 
