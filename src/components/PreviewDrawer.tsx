@@ -54,13 +54,13 @@ export default function PreviewDrawer({ lead, open, onOpenChange }: PreviewDrawe
         >
           <DialogHeader className="border-b border-white/10 pb-6">
             <div className="flex items-center justify-between">
-              <DialogTitle className="flex items-center space-x-3 text-2xl">
-                <div className="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center">
-                  <Sparkles className="h-5 w-5 text-cyan-400" />
-                </div>
-                <span className="text-white">Lead Details</span>
-              </DialogTitle>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-4">
+                <DialogTitle className="flex items-center space-x-3 text-2xl">
+                  <div className="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center">
+                    <Sparkles className="h-5 w-5 text-cyan-400" />
+                  </div>
+                  <span className="text-white">Lead Details</span>
+                </DialogTitle>
                 <Badge className={`${getTierColor(lead.tier)} text-base px-4 py-1.5`}>
                   {lead.tier === 'platinum' && <Sparkles className="h-4 w-4 mr-1.5" />}
                   {getTierDisplayName(lead.tier)}

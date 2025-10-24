@@ -66,7 +66,8 @@ html.light .glass-effect {
 }
 
 html.light .modal-glass {
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(20px) !important;
   border-color: rgba(0, 0, 0, 0.15) !important;
 }
 
