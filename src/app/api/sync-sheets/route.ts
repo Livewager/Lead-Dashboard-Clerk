@@ -14,21 +14,26 @@ interface CallRow {
 
 function parseCSV(csv: string): CallRow[] {
   const lines = csv.trim().split('\n')
-  const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim())
   
   return lines.slice(1).map(line => {
-    // Handle CSV with quoted fields
-    const values = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g)?.map(v => v.replace(/^"|"$/g, '').trim()) || []
+    // More robust CSV parsing with proper quote handling
+    const regex = /("([^"]*)"|([^,]*))/g
+    const values: string[] = []
+    let match
+    
+    while ((match = regex.exec(line)) !== null) {
+      values.push(match[2] !== undefined ? match[2] : match[3] || '')
+    }
     
     return {
-      timestamp: values[0] || '',
-      direction: values[1] || '',
-      toNumber: values[2] || '',
-      fromNumber: values[3] || '',
-      transcript: values[4] || '',
-      summary: values[5] || ''
+      timestamp: values[0]?.trim() || new Date().toISOString(),
+      direction: values[1]?.trim() || 'inbound',
+      toNumber: values[2]?.trim() || '',
+      fromNumber: values[3]?.trim() || '',
+      transcript: values[4]?.trim() || '',
+      summary: values[5]?.trim() || 'Phone inquiry'
     }
-  }).filter(row => row.timestamp) // Filter out empty rows
+  }).filter(row => row.fromNumber && row.fromNumber.length > 5) // Filter out empty/invalid rows
 }
 
 function inferLeadTier(summary: string, transcript: string): 'warm' | 'hot' | 'platinum' {
@@ -118,7 +123,11 @@ export async function GET() {
         'platinum': 7500
       }
       
-      // Create lead in database
+      // Extract name from transcript if possible (simple heuristic)
+      const nameMatch = row.transcript.match(/my name is (\w+)|I'm (\w+)|this is (\w+)/i)
+      const extractedName = nameMatch ? (nameMatch[1] || nameMatch[2] || nameMatch[3]) : null
+      
+      // Create lead in database with full data
       const leadData = {
         tier,
         status: 'available' as const,
@@ -126,11 +135,13 @@ export async function GET() {
         score,
         city: location.city,
         region: location.region,
-        summary: row.summary || 'Call inquiry about beauty services',
-        name: null, // Will be extracted from conversation if available
-        email: null,
+        summary: row.summary || 'Phone inquiry about beauty services',
+        name: extractedName,
+        email: null, // Not available from calls
         phone: row.fromNumber,
-        created_at: new Date(row.timestamp).toISOString()
+        created_at: row.timestamp && row.timestamp !== 'missing event_timestamp' 
+          ? new Date(row.timestamp).toISOString() 
+          : new Date().toISOString()
       }
       
       const result: any = await supabaseAdmin
@@ -140,8 +151,44 @@ export async function GET() {
         .select('id')
         .single()
       
-      if (result.data) {
-        newLeads.push(result.data)
+      if (result.data && result.data.id) {
+        // Add a random profile photo for the lead
+        const randomPhotos = [
+          'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
+          'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face',
+          'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face',
+          'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face',
+          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
+        ]
+        
+        const randomPhoto = randomPhotos[Math.floor(Math.random() * randomPhotos.length)]
+        
+        // Add photo
+        await supabaseAdmin
+          .from('lead_photos')
+          // @ts-ignore
+          .insert({
+            lead_id: result.data.id,
+            url: randomPhoto,
+            is_primary: true
+          })
+        
+        // Store full transcript and summary in metadata table
+        // Only visible to clinics that purchase the lead
+        await supabaseAdmin
+          .from('lead_metadata')
+          // @ts-ignore
+          .insert({
+            lead_id: result.data.id,
+            transcript: row.transcript,
+            call_summary: row.summary,
+            call_direction: row.direction
+          })
+        
+        newLeads.push({ 
+          ...result.data, 
+          phone: row.fromNumber
+        })
       }
     }
     

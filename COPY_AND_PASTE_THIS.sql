@@ -21,7 +21,7 @@ create table public.clinics (
 );
 
 -- Leads
-create table public.leads (
+create table public.leads (`
   id uuid primary key default gen_random_uuid(),
   tier lead_tier not null,
   status lead_status not null default 'available',
@@ -66,6 +66,17 @@ create table public.lead_locks (
   expires_at timestamptz not null
 );
 
+-- Lead Metadata (transcript, call summary - only visible after purchase)
+create table public.lead_metadata (
+  id uuid primary key default gen_random_uuid(),
+  lead_id uuid not null references public.leads(id) on delete cascade unique,
+  transcript text,
+  call_summary text,
+  call_duration integer,
+  call_direction text,
+  created_at timestamptz default now()
+);
+
 -- Enable Realtime
 alter publication supabase_realtime add table public.leads;
 
@@ -75,6 +86,7 @@ alter table public.leads enable row level security;
 alter table public.lead_photos enable row level security;
 alter table public.lead_claims enable row level security;
 alter table public.lead_locks enable row level security;
+alter table public.lead_metadata enable row level security;
 
 -- RLS Policies for Clinics
 create policy "clinic can read self"
@@ -124,6 +136,22 @@ create policy "clinic can read own claims"
         and clinics.clerk_user_id = auth.jwt()->>'sub'
     )
   );
+
+-- RLS Policies for Lead Metadata
+create policy "metadata visible to lead owner"
+  on public.lead_metadata for select
+  using (
+    exists (
+      select 1 from public.lead_claims lc
+      join public.clinics c on c.id = lc.clinic_id  
+      where lc.lead_id = lead_metadata.lead_id
+        and c.clerk_user_id = auth.jwt()->>'sub'
+    )
+  );
+
+create policy "service role can insert metadata"
+  on public.lead_metadata for insert
+  with check (true);
 
 -- Demo Data (Sample Leads)
 INSERT INTO public.leads (tier, status, price_cents, score, city, region, summary, name, email, phone) VALUES

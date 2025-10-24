@@ -28,17 +28,22 @@ export function useSheetSync() {
     }
   }
 
-  // Auto-sync every 2 minutes
+  // Auto-sync every 30 seconds in background
   useEffect(() => {
-    // Initial sync
-    syncSheets()
+    // Initial sync after 5 seconds
+    const timeout = setTimeout(() => {
+      syncSheets()
+    }, 5000)
     
-    // Set up interval
+    // Set up interval for background polling
     const interval = setInterval(() => {
       syncSheets()
-    }, 2 * 60 * 1000) // 2 minutes
+    }, 30 * 1000) // 30 seconds
     
-    return () => clearInterval(interval)
+    return () => {
+      clearTimeout(timeout)
+      clearInterval(interval)
+    }
   }, [])
 
   return { syncSheets, isSyncing, lastSync }
