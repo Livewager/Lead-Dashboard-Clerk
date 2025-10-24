@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from 'sonner'
 import Navigation from '@/components/Navigation'
+import Footer from '@/components/Footer'
 import QueryProvider from '@/components/QueryProvider'
 import './globals.css'
 
@@ -21,10 +22,13 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className="dark">
-        <body className={inter.className}>
+        <body className={`${inter.className} flex flex-col min-h-screen`}>
           <QueryProvider>
             <Navigation />
-            {children}
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
             <Toaster 
               position="top-right"
               theme="dark"
