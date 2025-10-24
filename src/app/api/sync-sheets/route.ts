@@ -126,20 +126,8 @@ export async function GET() {
         continue
       }
       
-      // Check if lead already exists (by phone number only - since timestamp is often missing)
-      const existingLead: any = await supabaseAdmin
-        .from('leads')
-        .select('id')
-        .eq('phone', row.fromNumber)
-        .limit(1)
-        .maybeSingle()
-      
-      if (existingLead.data) {
-        log.push(`Skipped ${row.fromNumber} - already exists`)
-        skipped.push(row.fromNumber)
-        continue
-      }
-      
+      // NO DEDUPLICATION - Allow multiple leads from same number
+      // Each call creates a new lead
       log.push(`Creating lead for ${row.fromNumber}...`)
       
       const tier = inferLeadTier(row.summary, row.transcript)
