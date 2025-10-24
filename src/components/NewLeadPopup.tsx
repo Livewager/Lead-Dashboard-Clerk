@@ -15,10 +15,11 @@ import {
   Mail,
   Phone
 } from 'lucide-react'
-import { formatCurrency, formatScore, getTierColor, getTierDisplayName } from '@/lib/utils'
+import { formatCurrency, formatScore, getTierColor, getTierDisplayName, maskName, maskEmail, maskPhone } from '@/lib/utils'
 import { Lead } from '@/types'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import QualityScoreInfo from '@/components/QualityScoreInfo'
 
 interface NewLeadPopupProps {
   lead: Lead | null
@@ -36,22 +37,23 @@ export default function NewLeadPopup({
   onClaim 
 }: NewLeadPopupProps) {
   const [imageError, setImageError] = useState(false)
+  const [progress, setProgress] = useState(100)
+
+  // Auto-dismiss progress bar
+  useEffect(() => {
+    if (isVisible) {
+      setProgress(100)
+      const interval = setInterval(() => {
+        setProgress(prev => Math.max(0, prev - (100 / 80))) // 8 seconds
+      }, 100)
+      
+      return () => clearInterval(interval)
+    }
+  }, [isVisible])
 
   if (!lead) return null
 
   const primaryPhoto = lead.photos?.find(photo => photo.is_primary) || lead.photos?.[0]
-
-  // Mask sensitive information
-  const maskEmail = (email?: string) => {
-    if (!email) return '••••@••••.com'
-    const [name, domain] = email.split('@')
-    return `${name.slice(0, 2)}••@${domain}`
-  }
-
-  const maskPhone = (phone?: string) => {
-    if (!phone) return '(•••) •••-••••'
-    return `(•••) •••-${phone.slice(-4)}`
-  }
 
   return (
     <AnimatePresence>
@@ -162,18 +164,18 @@ export default function NewLeadPopup({
                   )}
 
                   {/* Masked Contact Info */}
-                  <div className="space-y-2 bg-gray-800/30 p-3 rounded-lg">
+                  <div className="space-y-2 bg-gray-800/50 p-3 rounded-lg border border-white/10">
                     <div className="flex items-center space-x-2 text-xs text-gray-400">
                       <User className="h-3 w-3" />
-                      <span>Name: ••••••••</span>
+                      <span>Name: {maskName(lead.name)}</span>
                     </div>
                     <div className="flex items-center space-x-2 text-xs text-gray-400">
                       <Mail className="h-3 w-3" />
-                      <span>Email: {maskEmail()}</span>
+                      <span>Email: {maskEmail(lead.email)}</span>
                     </div>
                     <div className="flex items-center space-x-2 text-xs text-gray-400">
                       <Phone className="h-3 w-3" />
-                      <span>Phone: {maskPhone()}</span>
+                      <span>Phone: {maskPhone(lead.phone)}</span>
                     </div>
                   </div>
 
@@ -217,15 +219,24 @@ export default function NewLeadPopup({
                   </Button>
                 </motion.div>
 
-                {/* Auto-close notice */}
-                <motion.p
+                {/* Progress Bar */}
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
-                  className="text-center text-xs text-gray-500"
+                  className="space-y-2"
                 >
-                  This popup will auto-close in 15 seconds
-                </motion.p>
+                  <div className="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                      style={{ width: `${progress}%` }}
+                      transition={{ duration: 0.1 }}
+                    />
+                  </div>
+                  <p className="text-center text-xs text-gray-400">
+                    Auto-closing in {Math.ceil((progress / 100) * 8)}s • Click anywhere to dismiss
+                  </p>
+                </motion.div>
               </CardContent>
             </Card>
           </motion.div>
