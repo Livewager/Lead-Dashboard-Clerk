@@ -7,12 +7,16 @@ export default authMiddleware({
     '/demo',
     '/sign-in(.*)',
     '/sign-up(.*)',
-    '/api/health'
+    '/api/health',
+    '/api/sync-sheets',
+    '/api/test-sync'
   ],
   // Routes that can always be accessed, and have
   // no authentication information
   ignoredRoutes: [
-    '/api/health'
+    '/api/health',
+    '/api/sync-sheets',
+    '/api/test-sync'
   ]
 })
 
