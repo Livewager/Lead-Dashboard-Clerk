@@ -15,25 +15,36 @@ interface CallRow {
 function parseCSV(csv: string): CallRow[] {
   const lines = csv.trim().split('\n')
   
-  return lines.slice(1).map(line => {
-    // More robust CSV parsing with proper quote handling
-    const regex = /("([^"]*)"|([^,]*))/g
-    const values: string[] = []
-    let match
-    
-    while ((match = regex.exec(line)) !== null) {
-      values.push(match[2] !== undefined ? match[2] : match[3] || '')
+  // Skip header row and parse data rows
+  const dataRows = lines.slice(1).map((line, index) => {
+    try {
+      // Split by comma but respect quotes
+      const matches = line.match(/("(?:[^"]|"")*"|[^,]*)/g) || []
+      const values = matches.map(v => v.replace(/^"|"$/g, '').replace(/""/g, '"').trim())
+      
+      const fromNumber = values[3]?.replace(/\D/g, '') || '' // Extract digits only
+      
+      // Only process if we have a valid phone number
+      if (!fromNumber || fromNumber.length < 10) {
+        return null
+      }
+      
+      return {
+        timestamp: values[0] || '',
+        direction: values[1] || 'inbound',
+        toNumber: values[2] || '',
+        fromNumber: fromNumber,
+        transcript: values[4] || '',
+        summary: values[5] || 'Phone inquiry about services'
+      }
+    } catch (error) {
+      console.error(`Error parsing row ${index}:`, error)
+      return null
     }
-    
-    return {
-      timestamp: values[0]?.trim() || new Date().toISOString(),
-      direction: values[1]?.trim() || 'inbound',
-      toNumber: values[2]?.trim() || '',
-      fromNumber: values[3]?.trim() || '',
-      transcript: values[4]?.trim() || '',
-      summary: values[5]?.trim() || 'Phone inquiry'
-    }
-  }).filter(row => row.fromNumber && row.fromNumber.length > 5) // Filter out empty/invalid rows
+  }).filter((row): row is CallRow => row !== null)
+  
+  console.log(`Parsed ${dataRows.length} valid rows from ${lines.length - 1} total rows`)
+  return dataRows
 }
 
 function inferLeadTier(summary: string, transcript: string): 'warm' | 'hot' | 'platinum' {
@@ -85,19 +96,29 @@ function extractLocationFromPhone(phone: string): { city: string, region: string
 }
 
 export async function GET() {
+  const log: string[] = []
+  
   try {
+    log.push('Starting Google Sheets sync...')
+    
     // Fetch CSV from Google Sheets
     const res = await fetch(SHEET_URL, { cache: 'no-store' })
     
     if (!res.ok) {
-      return NextResponse.json({ error: 'Failed to fetch sheet' }, { status: 500 })
+      log.push(`Failed to fetch sheet: ${res.status}`)
+      return NextResponse.json({ error: 'Failed to fetch sheet', log }, { status: 500 })
     }
     
     const csv = await res.text()
+    log.push(`Fetched CSV: ${csv.length} bytes`)
+    
     const rows = parseCSV(csv)
+    log.push(`Parsed ${rows.length} rows with valid phone numbers`)
     
     // Process each row and create leads
     const newLeads = []
+    const skipped = []
+    const errors = []
     
     for (const row of rows) {
       // Skip if no valid phone number
@@ -114,11 +135,12 @@ export async function GET() {
         .maybeSingle()
       
       if (existingLead.data) {
-        console.log(`Lead already exists for phone: ${row.fromNumber}`)
-        continue // Skip if already exists
+        log.push(`Skipped ${row.fromNumber} - already exists`)
+        skipped.push(row.fromNumber)
+        continue
       }
       
-      console.log(`Creating new lead for phone: ${row.fromNumber}`)
+      log.push(`Creating lead for ${row.fromNumber}...`)
       
       const tier = inferLeadTier(row.summary, row.transcript)
       const score = calculateQualityScore(row.summary, row.transcript)
@@ -158,12 +180,13 @@ export async function GET() {
         .single()
       
       if (result.error) {
-        console.error('Error creating lead:', result.error)
+        log.push(`Error creating lead for ${row.fromNumber}: ${result.error.message}`)
+        errors.push({ phone: row.fromNumber, error: result.error.message })
         continue
       }
       
       if (result.data && result.data.id) {
-        console.log(`Created lead ${result.data.id} for phone ${row.fromNumber}`)
+        log.push(`✅ Created lead ${result.data.id}`)
         // Add a random profile photo for the lead
         const randomPhotos = [
           'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
@@ -208,11 +231,21 @@ export async function GET() {
       success: true, 
       processed: rows.length,
       newLeads: newLeads.length,
-      message: `Processed ${rows.length} rows, created ${newLeads.length} new leads`
+      skipped: skipped.length,
+      errors: errors.length,
+      message: `Processed ${rows.length} rows, created ${newLeads.length} new leads, skipped ${skipped.length}, errors ${errors.length}`,
+      log,
+      errorDetails: errors,
+      samplePhones: rows.slice(0, 3).map(r => r.fromNumber)
     })
-  } catch (error) {
-    console.error('Error syncing sheets:', error)
-    return NextResponse.json({ error: 'Sync failed', details: String(error) }, { status: 500 })
+  } catch (error: any) {
+    log.push(`Fatal error: ${error.message}`)
+    return NextResponse.json({ 
+      success: false,
+      error: error.message || String(error),
+      log,
+      stack: error.stack
+    }, { status: 500 })
   }
 }
 
