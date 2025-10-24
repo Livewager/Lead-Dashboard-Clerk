@@ -80,12 +80,12 @@ export default function PreviewDrawer({ lead, open, onOpenChange }: PreviewDrawe
 
           {/* Content */}
           <div className="relative px-6 py-6 overflow-y-auto max-h-[calc(90vh-100px)] custom-scrollbar">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div className="space-y-6">
               
-              {/* LEFT: Photo Column (2/5) */}
-              <div className="lg:col-span-2 space-y-4">
+              {/* Photo Section - Full Width on Top */}
+              <div className="space-y-4">
                 {/* Main Photo */}
-                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gray-800/50 border-2 border-white/10 shadow-2xl">
+                <div className="relative aspect-[16/10] max-h-[400px] rounded-2xl overflow-hidden bg-gray-800/50 border-2 border-white/10 shadow-2xl">
                   {primaryPhoto && !imageError ? (
                     <>
                       <Image
@@ -143,8 +143,8 @@ export default function PreviewDrawer({ lead, open, onOpenChange }: PreviewDrawe
                 )}
               </div>
 
-              {/* RIGHT: Information Column (3/5) */}
-              <div className="lg:col-span-3 space-y-5">
+              {/* Information Section - Full Width Below Photo */}
+              <div className="space-y-5">
                 
                 {/* Quick Stats Grid */}
                 <div className="grid grid-cols-2 gap-4">
