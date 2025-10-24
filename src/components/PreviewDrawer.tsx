@@ -83,9 +83,9 @@ export default function PreviewDrawer({ lead, open, onOpenChange }: PreviewDrawe
             <div className="space-y-6">
               
               {/* Photo Section - Full Width on Top */}
-              <div className="space-y-4">
+              <div className="w-full space-y-4">
                 {/* Main Photo */}
-                <div className="relative aspect-[16/10] max-h-[400px] rounded-2xl overflow-hidden bg-gray-800/50 border-2 border-white/10 shadow-2xl">
+                <div className="relative w-full aspect-[16/9] max-h-[350px] rounded-2xl overflow-hidden bg-gray-800/50 border-2 border-white/10 shadow-2xl">
                   {primaryPhoto && !imageError ? (
                     <>
                       <Image
