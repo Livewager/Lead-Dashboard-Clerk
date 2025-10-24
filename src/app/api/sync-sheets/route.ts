@@ -100,17 +100,25 @@ export async function GET() {
     const newLeads = []
     
     for (const row of rows) {
-      // Check if lead already exists (by phone number or timestamp)
+      // Skip if no valid phone number
+      if (!row.fromNumber || row.fromNumber.length < 10) {
+        continue
+      }
+      
+      // Check if lead already exists (by phone number only - since timestamp is often missing)
       const existingLead: any = await supabaseAdmin
         .from('leads')
         .select('id')
         .eq('phone', row.fromNumber)
-        .eq('created_at', new Date(row.timestamp).toISOString())
-        .single()
+        .limit(1)
+        .maybeSingle()
       
       if (existingLead.data) {
+        console.log(`Lead already exists for phone: ${row.fromNumber}`)
         continue // Skip if already exists
       }
+      
+      console.log(`Creating new lead for phone: ${row.fromNumber}`)
       
       const tier = inferLeadTier(row.summary, row.transcript)
       const score = calculateQualityScore(row.summary, row.transcript)
@@ -139,9 +147,7 @@ export async function GET() {
         name: extractedName,
         email: null, // Not available from calls
         phone: row.fromNumber,
-        created_at: row.timestamp && row.timestamp !== 'missing event_timestamp' 
-          ? new Date(row.timestamp).toISOString() 
-          : new Date().toISOString()
+        created_at: new Date().toISOString() // Always use current time for consistency
       }
       
       const result: any = await supabaseAdmin
@@ -151,7 +157,13 @@ export async function GET() {
         .select('id')
         .single()
       
+      if (result.error) {
+        console.error('Error creating lead:', result.error)
+        continue
+      }
+      
       if (result.data && result.data.id) {
+        console.log(`Created lead ${result.data.id} for phone ${row.fromNumber}`)
         // Add a random profile photo for the lead
         const randomPhotos = [
           'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
