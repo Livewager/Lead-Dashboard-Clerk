@@ -30,6 +30,7 @@ import NewLeadsChart from '@/components/charts/NewLeadsChart'
 import AvailableNowChart from '@/components/charts/AvailableNowChart'
 import QualityScoreChart from '@/components/charts/QualityScoreChart'
 import RevenueChart from '@/components/charts/RevenueChart'
+import { useSheetSync } from '@/hooks/useSheetSync'
 
 export default function Dashboard() {
   const { user } = useUser()
@@ -42,6 +43,9 @@ export default function Dashboard() {
   const [filter, setFilter] = useState<'all' | 'warm' | 'hot' | 'platinum' | 'my-leads'>('all')
   const [transactionId, setTransactionId] = useState('')
   const [currentClinicId, setCurrentClinicId] = useState<string | undefined>(undefined)
+
+  // Auto-sync with Google Sheets (11 Labs calls)
+  const { syncSheets, isSyncing, lastSync } = useSheetSync()
 
   // Fetch current clinic ID
   useEffect(() => {
@@ -294,9 +298,22 @@ export default function Dashboard() {
               </p>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm">
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh
+              {lastSync && (
+                <div className="text-xs text-gray-400">
+                  Last sync: {lastSync.toLocaleTimeString()}
+                </div>
+              )}
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  syncSheets()
+                  refetch()
+                }}
+                disabled={isSyncing}
+              >
+                <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
+                {isSyncing ? 'Syncing...' : 'Sync Calls'}
               </Button>
             </div>
           </div>
