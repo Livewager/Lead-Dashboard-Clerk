@@ -82,6 +82,7 @@ export async function GET() {
           
           const createResult: any = await supabaseAdmin
             .from('leads')
+            // @ts-ignore
             .insert(leadData)
             .select('id')
             .single()
