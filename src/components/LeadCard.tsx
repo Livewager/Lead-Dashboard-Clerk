@@ -15,7 +15,8 @@ import {
   User,
   Sparkles,
   Mail,
-  Phone
+  Phone,
+  Calendar
 } from 'lucide-react'
 import { formatCurrency, formatScore, getTierColor, getStatusColor, getTierDisplayName, getStatusDisplayName, maskName, maskEmail, maskPhone } from '@/lib/utils'
 import { Lead } from '@/types'
@@ -205,11 +206,34 @@ export default function LeadCard({ lead, onClaim, onPreview, currentClinicId }: 
             <p className="text-xs text-gray-400">{lead.region}</p>
           )}
 
+          {/* Summary - More Detailed */}
           {lead.summary && (
-            <p className="text-sm text-gray-300 line-clamp-2">
-              {lead.summary}
-            </p>
+            <div className="bg-gray-800/30 p-3 rounded-lg border border-white/10">
+              <p className="text-sm text-gray-300 line-clamp-3 leading-relaxed">
+                {lead.summary}
+              </p>
+            </div>
           )}
+
+          {/* Additional Lead Details */}
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="flex items-center space-x-1.5 text-gray-400">
+              <Calendar className="h-3 w-3" />
+              <span>
+                {(() => {
+                  const hours = Math.floor((Date.now() - new Date(lead.created_at).getTime()) / (1000 * 60 * 60))
+                  if (hours < 1) return 'Just posted'
+                  if (hours < 24) return `${hours}h ago`
+                  const days = Math.floor(hours / 24)
+                  return `${days}d ago`
+                })()}
+              </span>
+            </div>
+            <div className="flex items-center space-x-1.5 text-gray-400 justify-end">
+              <Sparkles className="h-3 w-3" />
+              <span className="font-medium">{getTierDisplayName(lead.tier)}</span>
+            </div>
+          </div>
 
           {/* Masked Contact Information */}
           <div className="space-y-1 bg-gray-800/30 p-2 rounded-lg">
