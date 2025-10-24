@@ -10,7 +10,8 @@ export default authMiddleware({
     '/api/health',
     '/api/sync-sheets',
     '/api/test-sync',
-    '/api/debug-sync'
+    '/api/debug-sync',
+    '/api/simple-sync'
   ],
   // Routes that can always be accessed, and have
   // no authentication information
@@ -18,7 +19,8 @@ export default authMiddleware({
     '/api/health',
     '/api/sync-sheets',
     '/api/test-sync',
-    '/api/debug-sync'
+    '/api/debug-sync',
+    '/api/simple-sync'
   ]
 })
 
