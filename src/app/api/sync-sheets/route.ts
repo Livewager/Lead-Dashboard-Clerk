@@ -153,24 +153,53 @@ export async function GET() {
         'platinum': 7500
       }
       
-      // Extract name from transcript if possible (simple heuristic)
-      const nameMatch = row.transcript.match(/my name is (\w+)|I'm (\w+)|this is (\w+)/i)
-      const extractedName = nameMatch ? (nameMatch[1] || nameMatch[2] || nameMatch[3]) : null
+      // Extract name from transcript (improved extraction)
+      const namePatterns = [
+        /my name is ([A-Z][a-z]+ [A-Z][a-z]+)/i,
+        /I'm ([A-Z][a-z]+ [A-Z][a-z]+)/i,
+        /this is ([A-Z][a-z]+ [A-Z][a-z]+)/i,
+        /([A-Z][a-z]+ [A-Z][a-z]+) calling/i,
+        /^([A-Z][a-z]+ [A-Z][a-z]+):/i, // Name at start of transcript
+      ]
       
-      // Create lead in database with full data
+      let extractedName = null
+      for (const pattern of namePatterns) {
+        const match = row.transcript.match(pattern)
+        if (match && match[1]) {
+          extractedName = match[1]
+          break
+        }
+      }
+      
+      // Extract email from transcript  
+      const emailMatch = row.transcript.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/i)
+      const extractedEmail = emailMatch ? emailMatch[1] : null
+      
+      // Better location extraction from summary and transcript
+      const combined = row.summary + ' ' + row.transcript
+      const cityMatch = combined.match(/(Vancouver|Burnaby|Richmond|Surrey|Coquitlam|Victoria|Kelowna)/i)
+      const extractedCity = cityMatch ? cityMatch[1] : location.city
+      
+      // Extract region/neighborhood
+      const regionMatch = combined.match(/(Downtown|Metrotown|Steveston|Kitsilano|Gastown|Yaletown|West End)/i)
+      const extractedRegion = regionMatch ? regionMatch[1] : location.region
+      
+      // Create lead in database with ALL extracted data
       const leadData = {
         tier,
         status: 'available' as const,
         price_cents: priceMap[tier],
         score,
-        city: location.city,
-        region: location.region,
-        summary: row.summary || 'Phone inquiry about beauty services',
-        name: extractedName,
-        email: null, // Not available from calls
+        city: extractedCity,
+        region: extractedRegion,
+        summary: row.summary || row.transcript.substring(0, 200) || 'Phone inquiry about beauty services',
+        name: extractedName || 'Prospect',
+        email: extractedEmail,
         phone: row.fromNumber,
-        created_at: new Date().toISOString() // Always use current time for consistency
+        created_at: new Date().toISOString()
       }
+      
+      log.push(`Lead data: ${extractedCity}, ${extractedName || 'no name'}, ${extractedEmail || 'no email'}`)
       
       const result: any = await supabaseAdmin
         .from('leads')
