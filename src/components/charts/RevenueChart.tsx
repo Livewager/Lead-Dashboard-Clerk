@@ -14,7 +14,7 @@ const data = [
 
 export default function RevenueChart() {
   return (
-    <ResponsiveContainer width="100%" height={60}>
+    <ResponsiveContainer width="100%" height="100%">
       <LineChart data={data}>
         <defs>
           <linearGradient id="colorRevenue" x1="0" y1="0" x2="1" y2="0">

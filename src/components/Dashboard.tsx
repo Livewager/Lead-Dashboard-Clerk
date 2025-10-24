@@ -307,83 +307,91 @@ export default function Dashboard() {
         {/* KPI Cards */}
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
           <Card className="glass-effect premium-shadow-lg border-l-4 border-l-cyan-500/50 hover:border-l-cyan-400 transition-all">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-semibold text-gray-200 uppercase tracking-wide">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 sm:pb-3">
+              <CardTitle className="text-xs sm:text-sm font-semibold text-gray-200 uppercase tracking-wide">
                 New Leads (24h)
               </CardTitle>
-              <div className="p-2.5 bg-cyan-500/20 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-cyan-400" />
+              <div className="p-1.5 sm:p-2.5 bg-cyan-500/20 rounded-lg">
+                <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400" />
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="text-3xl font-bold text-white">
+            <CardContent className="space-y-2 sm:space-y-3">
+              <div className="text-2xl sm:text-3xl font-bold text-white">
                 {stats?.newLeads24h || 0}
               </div>
-              <NewLeadsChart />
+              <div className="h-12 sm:h-16">
+                <NewLeadsChart />
+              </div>
               <div className="flex items-center space-x-1">
                 <TrendingUp className="h-3 w-3 text-cyan-400" />
-                <p className="text-sm text-cyan-400 font-medium">
-                  +12% from yesterday
+                <p className="text-xs sm:text-sm text-cyan-400 font-medium">
+                  +12%
                 </p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="glass-effect premium-shadow-lg border-l-4 border-l-blue-500/50 hover:border-l-blue-400 transition-all">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-semibold text-gray-200 uppercase tracking-wide">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 sm:pb-3">
+              <CardTitle className="text-xs sm:text-sm font-semibold text-gray-200 uppercase tracking-wide">
                 Available Now
               </CardTitle>
-              <div className="p-2.5 bg-blue-500/20 rounded-lg">
-                <Users className="h-5 w-5 text-blue-400" />
+              <div className="p-1.5 sm:p-2.5 bg-blue-500/20 rounded-lg">
+                <Users className="h-4 w-4 sm:h-5 sm:w-5 text-blue-400" />
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="text-3xl font-bold text-white">
+            <CardContent className="space-y-2 sm:space-y-3">
+              <div className="text-2xl sm:text-3xl font-bold text-white">
                 {stats?.availableNow || 0}
               </div>
-              <AvailableNowChart />
-              <p className="text-sm text-blue-400 font-medium">
-                Ready to claim
+              <div className="h-12 sm:h-16">
+                <AvailableNowChart />
+              </div>
+              <p className="text-xs sm:text-sm text-blue-400 font-medium">
+                Ready
               </p>
             </CardContent>
           </Card>
 
           <Card className="glass-effect premium-shadow-lg border-l-4 border-l-yellow-500/50 hover:border-l-yellow-400 transition-all">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-semibold text-gray-200 uppercase tracking-wide">
-                Avg Lead Score
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 sm:pb-3">
+              <CardTitle className="text-xs sm:text-sm font-semibold text-gray-200 uppercase tracking-wide">
+                Avg Score
               </CardTitle>
-              <div className="p-2.5 bg-yellow-500/20 rounded-lg">
-                <Star className="h-5 w-5 text-yellow-400" />
+              <div className="p-1.5 sm:p-2.5 bg-yellow-500/20 rounded-lg">
+                <Star className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-400" />
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="text-3xl font-bold text-white">
+            <CardContent className="space-y-2 sm:space-y-3">
+              <div className="text-2xl sm:text-3xl font-bold text-white">
                 {formatScore(stats?.averageScore || 0)}
               </div>
-              <QualityScoreChart score={stats?.averageScore || 0} />
-              <p className="text-sm text-yellow-400 font-medium">
-                Quality indicator
+              <div className="h-12 sm:h-16">
+                <QualityScoreChart score={stats?.averageScore || 0} />
+              </div>
+              <p className="text-xs sm:text-sm text-yellow-400 font-medium">
+                Quality
               </p>
             </CardContent>
           </Card>
 
           <Card className="glass-effect premium-shadow-lg border-l-4 border-l-green-500/50 hover:border-l-green-400 transition-all">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-semibold text-gray-200 uppercase tracking-wide">
-                Total Revenue
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 sm:pb-3">
+              <CardTitle className="text-xs sm:text-sm font-semibold text-gray-200 uppercase tracking-wide">
+                Revenue
               </CardTitle>
-              <div className="p-2.5 bg-green-500/20 rounded-lg">
-                <DollarSign className="h-5 w-5 text-green-400" />
+              <div className="p-1.5 sm:p-2.5 bg-green-500/20 rounded-lg">
+                <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 text-green-400" />
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="text-3xl font-bold text-white">
+            <CardContent className="space-y-2 sm:space-y-3">
+              <div className="text-2xl sm:text-3xl font-bold text-white">
                 {formatCurrency(stats?.totalRevenue || 0)}
               </div>
-              <RevenueChart />
-              <p className="text-sm text-green-400 font-medium">
+              <div className="h-12 sm:h-16">
+                <RevenueChart />
+              </div>
+              <p className="text-xs sm:text-sm text-green-400 font-medium">
                 This month
               </p>
             </CardContent>

@@ -10,7 +10,7 @@ export default function QualityScoreChart({ score }: QualityScoreChartProps) {
   const data = [{ value: score, fill: '#eab308' }]
 
   return (
-    <ResponsiveContainer width="100%" height={60}>
+    <ResponsiveContainer width="100%" height="100%">
       <RadialBarChart 
         cx="50%" 
         cy="50%" 

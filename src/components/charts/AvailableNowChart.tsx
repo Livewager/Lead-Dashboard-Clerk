@@ -16,7 +16,7 @@ const colors = ['#3b82f6', '#3b82f6', '#3b82f6', '#3b82f6', '#3b82f6', '#3b82f6'
 
 export default function AvailableNowChart() {
   return (
-    <ResponsiveContainer width="100%" height={60}>
+    <ResponsiveContainer width="100%" height="100%">
       <BarChart data={data}>
         <Bar dataKey="value" radius={[4, 4, 0, 0]} isAnimationActive={true}>
           {data.map((entry, index) => (
