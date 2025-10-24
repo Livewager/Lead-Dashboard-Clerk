@@ -260,7 +260,8 @@ export default function LeadCard({ lead, onClaim, onPreview, currentClinicId }: 
             <Button
               size="sm"
               onClick={onPreview}
-              className="flex-1 bg-cyan-600 hover:bg-cyan-700"
+              className="flex-1 bg-cyan-600 hover:bg-cyan-700 touch-manipulation"
+              aria-label={`View full details for claimed lead in ${lead.city}`}
             >
               <Eye className="h-4 w-4 mr-1" />
               View Lead
@@ -270,7 +271,8 @@ export default function LeadCard({ lead, onClaim, onPreview, currentClinicId }: 
               variant="outline"
               size="sm"
               onClick={onPreview}
-              className="flex-1"
+              className="flex-1 touch-manipulation"
+              aria-label={`Preview lead in ${lead.city}`}
             >
               <Eye className="h-4 w-4 mr-1" />
               Preview
@@ -281,7 +283,8 @@ export default function LeadCard({ lead, onClaim, onPreview, currentClinicId }: 
             <Button
               size="sm"
               onClick={onClaim}
-              className="flex-1 bg-cyan-600 hover:bg-cyan-700"
+              className="flex-1 bg-cyan-600 hover:bg-cyan-700 touch-manipulation min-h-[44px]"
+              aria-label={`Claim lead for ${formatCurrency(lead.price_cents)}`}
             >
               Claim Lead
             </Button>
@@ -291,7 +294,8 @@ export default function LeadCard({ lead, onClaim, onPreview, currentClinicId }: 
             <Button
               size="sm"
               disabled
-              className="flex-1 bg-orange-600"
+              className="flex-1 bg-orange-600 min-h-[44px]"
+              aria-label="Lead is being claimed"
             >
               <Clock className="h-4 w-4 mr-1 animate-spin" />
               Claiming...
@@ -302,7 +306,8 @@ export default function LeadCard({ lead, onClaim, onPreview, currentClinicId }: 
             <Button
               size="sm"
               disabled
-              className="flex-1 bg-gray-600"
+              className="flex-1 bg-gray-600 min-h-[44px]"
+              aria-label="Lead already claimed by another clinic"
             >
               <CheckCircle className="h-4 w-4 mr-1" />
               Claimed
