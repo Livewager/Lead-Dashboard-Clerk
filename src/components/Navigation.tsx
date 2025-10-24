@@ -3,14 +3,14 @@
 import { useState, useEffect } from 'react'
 import { useUser, UserButton } from '@clerk/nextjs'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { 
   LayoutDashboard, 
   User, 
   Menu, 
-  X,
-  Sparkles
+  X
 } from 'lucide-react'
 
 export default function Navigation() {
@@ -45,8 +45,14 @@ export default function Navigation() {
             href={user ? "/dashboard" : "/"} 
             className="flex items-center space-x-3 group"
           >
-            <div className="h-10 w-10 bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/30 group-hover:shadow-cyan-500/50 transition-shadow">
-              <Sparkles className="h-5 w-5 text-white" />
+            <div className="relative h-10 w-10 group-hover:scale-105 transition-transform">
+              <Image
+                src="/logo.png"
+                alt="Clinic Concierge"
+                fill
+                className="object-contain brightness-0 invert"
+                priority
+              />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
               Clinic Concierge

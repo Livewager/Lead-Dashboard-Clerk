@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
+import Image from 'next/image'
 import { 
   Sparkles, 
   TrendingUp, 
@@ -388,7 +389,14 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <Sparkles className="h-6 w-6 text-cyan-400" />
+                <div className="relative h-8 w-8">
+                  <Image
+                    src="/logo.png"
+                    alt="Clinic Concierge"
+                    fill
+                    className="object-contain brightness-0 invert"
+                  />
+                </div>
                 <span className="text-xl font-bold text-white">Clinic Concierge</span>
               </div>
               <p className="text-gray-400">

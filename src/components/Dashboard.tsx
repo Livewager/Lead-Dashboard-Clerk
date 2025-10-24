@@ -26,6 +26,10 @@ import ClaimModal from '@/components/ClaimModal'
 import ClaimSuccessModal from '@/components/ClaimSuccessModal'
 import PreviewDrawer from '@/components/PreviewDrawer'
 import NewLeadPopup from '@/components/NewLeadPopup'
+import NewLeadsChart from '@/components/charts/NewLeadsChart'
+import AvailableNowChart from '@/components/charts/AvailableNowChart'
+import QualityScoreChart from '@/components/charts/QualityScoreChart'
+import RevenueChart from '@/components/charts/RevenueChart'
 
 export default function Dashboard() {
   const { user } = useUser()
@@ -311,10 +315,11 @@ export default function Dashboard() {
                 <TrendingUp className="h-5 w-5 text-cyan-400" />
               </div>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-3">
               <div className="text-3xl font-bold text-white">
                 {stats?.newLeads24h || 0}
               </div>
+              <NewLeadsChart />
               <div className="flex items-center space-x-1">
                 <TrendingUp className="h-3 w-3 text-cyan-400" />
                 <p className="text-sm text-cyan-400 font-medium">
@@ -333,10 +338,11 @@ export default function Dashboard() {
                 <Users className="h-5 w-5 text-blue-400" />
               </div>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-3">
               <div className="text-3xl font-bold text-white">
                 {stats?.availableNow || 0}
               </div>
+              <AvailableNowChart />
               <p className="text-sm text-blue-400 font-medium">
                 Ready to claim
               </p>
@@ -352,10 +358,11 @@ export default function Dashboard() {
                 <Star className="h-5 w-5 text-yellow-400" />
               </div>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-3">
               <div className="text-3xl font-bold text-white">
                 {formatScore(stats?.averageScore || 0)}
               </div>
+              <QualityScoreChart score={stats?.averageScore || 0} />
               <p className="text-sm text-yellow-400 font-medium">
                 Quality indicator
               </p>
@@ -371,10 +378,11 @@ export default function Dashboard() {
                 <DollarSign className="h-5 w-5 text-green-400" />
               </div>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-3">
               <div className="text-3xl font-bold text-white">
                 {formatCurrency(stats?.totalRevenue || 0)}
               </div>
+              <RevenueChart />
               <p className="text-sm text-green-400 font-medium">
                 This month
               </p>
@@ -409,7 +417,7 @@ export default function Dashboard() {
         {/* Leads Grid */}
         <AnimatePresence mode="popLayout">
           <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
             layout
           >
             {leads?.map((lead, index) => (

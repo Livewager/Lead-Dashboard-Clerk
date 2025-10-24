@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { Sparkles, Mail, Phone, MapPin } from 'lucide-react'
+import Image from 'next/image'
+import { Mail, Phone, MapPin } from 'lucide-react'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -14,8 +15,13 @@ export default function Footer() {
             {/* Brand */}
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
-                <div className="h-10 w-10 bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/30">
-                  <Sparkles className="h-5 w-5 text-white" />
+                <div className="relative h-10 w-10">
+                  <Image
+                    src="/logo.png"
+                    alt="Clinic Concierge"
+                    fill
+                    className="object-contain brightness-0 invert"
+                  />
                 </div>
                 <span className="text-lg font-bold text-white">
                   Clinic Concierge
