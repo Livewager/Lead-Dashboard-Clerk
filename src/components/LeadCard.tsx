@@ -20,6 +20,7 @@ import {
 import { formatCurrency, formatScore, getTierColor, getStatusColor, getTierDisplayName, getStatusDisplayName, maskName, maskEmail, maskPhone } from '@/lib/utils'
 import { Lead } from '@/types'
 import Image from 'next/image'
+import QualityScoreInfo from '@/components/QualityScoreInfo'
 
 interface LeadCardProps {
   lead: Lead
@@ -195,7 +196,8 @@ export default function LeadCard({ lead, onClaim, onPreview, currentClinicId }: 
             </div>
             <div className="flex items-center space-x-1 text-sm">
               <Star className="h-4 w-4 text-yellow-400" />
-              <span className="text-yellow-400">{formatScore(lead.score)}</span>
+              <span className="text-yellow-400 font-semibold">{formatScore(lead.score)}</span>
+              <QualityScoreInfo score={lead.score} />
             </div>
           </div>
 
@@ -232,11 +234,22 @@ export default function LeadCard({ lead, onClaim, onPreview, currentClinicId }: 
           </div>
 
           <div className="flex items-center justify-between pt-2">
-            <div className="text-lg font-bold text-white">
+            <div className="text-xl font-bold text-white">
               {formatCurrency(lead.price_cents)}
             </div>
-            <div className="text-xs text-gray-400">
-              {new Date(lead.created_at).toLocaleDateString()}
+            <div className="text-right">
+              <div className="text-xs text-gray-500">
+                {new Date(lead.created_at).toLocaleDateString()}
+              </div>
+              <div className="text-xs text-cyan-400 font-medium">
+                {(() => {
+                  const hours = Math.floor((Date.now() - new Date(lead.created_at).getTime()) / (1000 * 60 * 60))
+                  if (hours < 1) return 'Just posted'
+                  if (hours < 24) return `${hours}h in queue`
+                  const days = Math.floor(hours / 24)
+                  return `${days}d in queue`
+                })()}
+              </div>
             </div>
           </div>
         </div>
