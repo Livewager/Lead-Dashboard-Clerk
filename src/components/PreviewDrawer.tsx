@@ -147,7 +147,7 @@ export default function PreviewDrawer({ lead, open, onOpenChange }: PreviewDrawe
               <div className="space-y-5">
                 
                 {/* Quick Stats Grid */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Location */}
                   <div className="bg-gradient-to-br from-cyan-500/15 to-blue-500/15 border-2 border-cyan-500/25 rounded-xl p-4 hover:border-cyan-500/40 transition-all">
                     <div className="flex items-start space-x-3">
@@ -157,7 +157,7 @@ export default function PreviewDrawer({ lead, open, onOpenChange }: PreviewDrawe
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-cyan-300/80 uppercase tracking-wide font-semibold mb-1">Location</p>
                         <p className="text-lg font-bold text-white truncate">{lead.city || 'Unknown'}</p>
-                        {lead.region && <p className="text-sm text-gray-300">{lead.region}</p>}
+                        {lead.region && <p className="text-sm text-gray-300 truncate">{lead.region}</p>}
                       </div>
                     </div>
                   </div>
@@ -168,11 +168,11 @@ export default function PreviewDrawer({ lead, open, onOpenChange }: PreviewDrawe
                       <div className="w-10 h-10 bg-yellow-500/25 rounded-lg flex items-center justify-center flex-shrink-0">
                         <Star className="h-5 w-5 text-yellow-300" />
                       </div>
-                      <div className="flex-1">
-                        <p className="text-xs text-yellow-300/80 uppercase tracking-wide font-semibold mb-1">Quality Score</p>
-                        <div className="flex items-center space-x-2">
-                          <p className="text-2xl font-bold text-yellow-400">{formatScore(lead.score)}</p>
-                          <span className="text-gray-400 text-lg">/100</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-yellow-300/80 uppercase tracking-wide font-semibold mb-1">Quality</p>
+                        <div className="flex items-center space-x-1.5">
+                          <p className="text-xl sm:text-2xl font-bold text-yellow-400">{formatScore(lead.score)}</p>
+                          <span className="text-gray-400 text-base sm:text-lg">/100</span>
                           <QualityScoreInfo score={lead.score} />
                         </div>
                       </div>
